@@ -1,0 +1,114 @@
+/* Industrial Theme Overrides */
+
+/* Sider logo area */
+.sider-logo {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.sider-logo .logo-icon {
+  font-size: 22px;
+  margin-right: 8px;
+}
+
+/* Header */
+.app-header {
+  background: #fff !important;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0 24px !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Table row hover */
+.ant-table-tbody > tr:hover > td {
+  background: #f1f5f9 !important;
+}
+
+/* Smooth filter transitions */
+.ant-select,
+.ant-picker {
+  transition: all 0.2s ease;
+}
+
+/* Status tag clickable */
+.status-tag-clickable {
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.status-tag-clickable:hover {
+  opacity: 0.75;
+}
+
+/* Page container */
+.page-container {
+  padding: 0;
+}
+
+.page-header {
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.page-header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #334155;
+}
+
+/* Filter bar */
+.filter-bar {
+  margin-bottom: 16px;
+  padding: 16px;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+/* Content area */
+.content-area {
+  min-height: calc(100vh - 64px);
+  padding: 24px;
+  background: #F8FAFC;
+}
+
+/* Calendar attendance markers */
+.attendance-marker {
+  font-size: 11px;
+  line-height: 1.4;
+  padding: 1px 4px;
+  border-radius: 3px;
+  display: inline-block;
+  margin: 1px 0;
+}
+
+/* Card-style table wrapper */
+.table-card {
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.table-card .ant-table {
+  border-radius: 0;
+}
+
+/* Collapsed sider logo */
+.sider-logo.collapsed .logo-text {
+  display: none;
+}
