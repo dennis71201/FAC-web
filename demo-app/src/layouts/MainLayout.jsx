@@ -26,11 +26,11 @@ const menuItems = [
     icon: <AlertOutlined />,
     label: 'Alarm',
   },
-  // {
-  //   key: '/attendance',
-  //   icon: <CalendarOutlined />,
-  //   label: 'Attendance Sheet',
-  // },
+  {
+    key: '/attendance',
+    icon: <CalendarOutlined />,
+    label: 'Attendance Sheet',
+  },
   {
     key: '/passdown',
     icon: <SwapOutlined />,
