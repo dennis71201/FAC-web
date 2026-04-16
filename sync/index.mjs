@@ -17,12 +17,13 @@ import { JOBS, findJob, jobNames } from './jobs/registry.mjs';
 
 // ---------------- 參數解析 ----------------
 function parseArgs(argv) {
-  const args = { help: false, list: false, all: false, job: null };
+  const args = { help: false, list: false, all: false, job: null, since: null };
   for (const a of argv.slice(2)) {
     if (a === '--help' || a === '-h') args.help = true;
     else if (a === '--list') args.list = true;
     else if (a === '--all') args.all = true;
     else if (a.startsWith('--job=')) args.job = a.substring(6);
+    else if (a.startsWith('--since=')) args.since = a.substring(8);
     else {
       console.error(`未知參數: ${a}`);
       args.help = true;
@@ -38,8 +39,12 @@ Facilities 同步程式 CLI
 用法:
   node sync/index.mjs --list
   node sync/index.mjs --job=<name>
+  node sync/index.mjs --job=<name> --since=YYYY-MM-DD
   node sync/index.mjs --all
   node sync/index.mjs --help
+
+選項:
+  --since=YYYY-MM-DD  覆蓋水位，只同步該日期之後的資料（首次執行時用）
 
 可用的 job 名稱:
 ${jobNames().map(n => `  - ${n}`).join('\n')}
@@ -79,7 +84,7 @@ async function showList() {
 }
 
 // ---------------- 執行單一 job ----------------
-async function runJob(jobModule) {
+async function runJob(jobModule, { sinceOverride } = {}) {
   const { jobName, run } = jobModule;
   log.step(`▶ 執行 job: ${jobName}`);
 
@@ -88,12 +93,16 @@ async function runJob(jobModule) {
     throw new Error(`sync_state 中找不到 job "${jobName}" 的紀錄，請先執行 database/setup.mjs`);
   }
 
+  let lastSyncedEventTs = state.last_synced_event_ts;
+  if (sinceOverride) {
+    lastSyncedEventTs = new Date(sinceOverride);
+    log.info(`  使用 --since 覆蓋水位: ${lastSyncedEventTs.toISOString()}`);
+  }
+
   await markRunning(jobName);
 
   try {
-    const result = await run({
-      lastSyncedEventTs: state.last_synced_event_ts,
-    });
+    const result = await run({ lastSyncedEventTs });
 
     await markSuccess(jobName, result);
     log.ok(`✅ ${jobName} 完成，搬移 ${result.rowsSynced} 筆` +
@@ -159,7 +168,7 @@ async function main() {
       process.exitCode = 1;
       return;
     }
-    const r = await runJob(jobModule);
+    const r = await runJob(jobModule, { sinceOverride: args.since });
     if (!r.success) process.exitCode = 1;
     return;
   }
