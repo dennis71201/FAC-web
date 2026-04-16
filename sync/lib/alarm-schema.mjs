@@ -9,8 +9,8 @@ import sql from 'mssql';
  * DBA02 的 Alarm 欄位：21 source 欄 + UnAckDuration + source_factory + synced_at
  * （id 為 IDENTITY，不列入）
  */
-export function makeDba02AlarmTable() {
-  const table = new sql.Table('dbo.Alarm');
+export function makeDba02AlarmTable(tableName = 'dbo.Alarm') {
+  const table = new sql.Table(tableName);
   table.create = false;
 
   table.columns.add('EventStamp',    sql.DateTime2(7),  { nullable: true });

@@ -13,6 +13,7 @@ import sql from 'mssql';
 import { getPool } from '../lib/pools.mjs';
 import { log } from '../lib/log.mjs';
 import { makeDba02AlarmTable, addDba02AlarmRow } from '../lib/alarm-schema.mjs';
+import { SYNC_RDS02_ALARM_TABLE, SYNC_DBA02_ALARM_TABLE } from '../config.mjs';
 
 export const jobName = 'alarm_rds02_to_dba02';
 
@@ -35,7 +36,7 @@ export async function run({ lastSyncedEventTs }) {
            DomainName, UserFullName, AlarmDuration,
            User1, User2, User3,
            EventStampUTC, MilliSec, OperatorNode
-    FROM dbo.Alarm
+    FROM ${SYNC_RDS02_ALARM_TABLE}
     WHERE @lastTs IS NULL OR EventStamp > @lastTs
     ORDER BY EventStamp
   `);
@@ -48,7 +49,7 @@ export async function run({ lastSyncedEventTs }) {
   }
 
   // ----- 2. 構造 bulk insert table -----
-  const table = makeDba02AlarmTable();
+  const table = makeDba02AlarmTable(SYNC_DBA02_ALARM_TABLE);
   const syncedAt = new Date();
 
   for (const row of rows) {

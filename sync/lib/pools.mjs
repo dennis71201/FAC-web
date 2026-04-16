@@ -15,7 +15,7 @@ const pools = {};
  */
 export async function getPool(name) {
   if (!DB_CONFIGS[name]) {
-    throw new Error(`[pools] 未知的 DB 名稱: ${name}`);
+    throw new Error(`[pools] 未知的 DB 名稱: ${name}，請檢查 .env 是否已設定 DB_${name.toUpperCase()}_* 環境變數`);
   }
 
   if (!pools[name]) {

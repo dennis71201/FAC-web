@@ -19,7 +19,7 @@ export async function getState(jobName) {
            last_synced_event_ts,
            last_started_at, last_finished_at,
            last_status, last_rows_synced, last_error
-    FROM FAC_DBA02.dbo.sync_state
+    FROM dbo.sync_state
     WHERE job_name = @name
   `);
   return r.recordset[0] || null;
@@ -33,7 +33,7 @@ export async function listStates() {
            last_synced_event_ts,
            last_started_at, last_finished_at,
            last_status, last_rows_synced, last_error
-    FROM FAC_DBA02.dbo.sync_state
+    FROM dbo.sync_state
     ORDER BY job_name
   `);
   return r.recordset;
@@ -45,7 +45,7 @@ export async function markRunning(jobName) {
   const req = pool.request();
   req.input('name', sql.NVarChar(100), jobName);
   await req.query(`
-    UPDATE FAC_DBA02.dbo.sync_state
+    UPDATE dbo.sync_state
     SET last_status = 'running',
         last_started_at = GETDATE(),
         last_error = NULL,
@@ -64,7 +64,7 @@ export async function markSuccess(jobName, { rowsSynced, maxEventStamp }) {
 
   // maxEventStamp 為 null 時（無新資料）保留原本的 last_synced_event_ts
   await req.query(`
-    UPDATE FAC_DBA02.dbo.sync_state
+    UPDATE dbo.sync_state
     SET last_status = 'success',
         last_finished_at = GETDATE(),
         last_rows_synced = @rows,
@@ -83,7 +83,7 @@ export async function markFailure(jobName, errorMessage) {
   req.input('name',  sql.NVarChar(100),      jobName);
   req.input('error', sql.NVarChar(sql.MAX),  errorMessage);
   await req.query(`
-    UPDATE FAC_DBA02.dbo.sync_state
+    UPDATE dbo.sync_state
     SET last_status = 'failed',
         last_finished_at = GETDATE(),
         last_error = @error,
