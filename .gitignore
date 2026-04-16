@@ -1,12 +1,15 @@
 # Dependencies
-demo-app/node_modules/
+# 注意：VM 環境無法執行 npm install，部署需完整 node_modules
+# 故本專案 node_modules 需 commit 進 repo（參見 architecture.md）
+# node_modules/
 
 # Build output
-demo-app/dist/
-demo-app/dist-ssr/
+# dist 同樣需 commit（VM 無法執行 build）
+# dist/
+dist-ssr/
 
 # Vite cache
-demo-app/.vite/
+.vite/
 
 # Environment variables
 .env
