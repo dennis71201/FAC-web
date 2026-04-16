@@ -1,0 +1,39 @@
+{
+  "name": "demo-version",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "db:setup":     "node database/setup.mjs",
+    "db:reset":     "node database/setup.mjs --reset",
+    "db:seed":      "node database/seed_all.mjs",
+    "sync":         "node sync/index.mjs --all",
+    "sync:list":    "node sync/index.mjs --list",
+    "sync:a":       "node sync/index.mjs --job=alarm_rds02_to_dba02",
+    "sync:b-stage": "node sync/index.mjs --job=alarm_b1sa01_to_dba03",
+    "sync:b-final": "node sync/index.mjs --job=alarm_dba03_to_dba02",
+    "sync:help":    "node sync/index.mjs --help",
+    "server":       "node server/index.mjs",
+    "server:dev":   "node --watch server/index.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dennis71201/FAC-web.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/dennis71201/FAC-web/issues"
+  },
+  "homepage": "https://github.com/dennis71201/FAC-web#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.1",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mssql": "^12.2.1"
+  }
+}
