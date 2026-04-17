@@ -7,7 +7,7 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/zh-tw';
 import App from './App';
 import './index.css';
-import './App.css';
+import './styles/global.css';
 
 dayjs.locale('zh-tw');
 

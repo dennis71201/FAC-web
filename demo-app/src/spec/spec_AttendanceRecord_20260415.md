@@ -47,7 +47,7 @@
 
 ## 元件架構
 
-### `AttendanceSheet.jsx` — 頁面主元件
+### `AttendanceRecord.jsx` — 頁面主元件
 
 **路由**：`/attendance`
 
@@ -215,7 +215,7 @@ Process   公假1
 
 | 檔案路徑                                    | 狀態   | 說明                         |
 |---------------------------------------------|--------|------------------------------|
-| `src/pages/AttendanceSheet.jsx`             | 重寫   | 頁面主元件                   |
+| `src/pages/AttendanceRecord.jsx`            | 重寫   | 頁面主元件                   |
 | `src/components/AttendanceCalendar.jsx`     | 新增   | 自訂 7 欄行事曆              |
 | `src/components/AttendanceSidebar.jsx`      | 新增   | 右側摘要面板                 |
 | `src/mock/attendance.js`                    | 重寫   | 3 種類型、無紀錄=正常出勤    |

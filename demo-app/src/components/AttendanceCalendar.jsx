@@ -7,6 +7,8 @@ const typeConfig = {
   '出差': { label: '出差', className: 'type-出差' },
   '請假': { label: '請假', className: 'type-請假' },
   '公假': { label: '公假', className: 'type-公假' },
+  'Training': { label: 'Training', className: 'type-training' },
+  'FWA': { label: 'FWA', className: 'type-fwa' },
 };
 
 function getCalendarDays(year, month) {

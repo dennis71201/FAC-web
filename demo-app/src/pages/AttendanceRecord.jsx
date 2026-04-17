@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react';
 import { Select, DatePicker, FloatButton } from 'antd';
-import { PlusOutlined, CalendarOutlined } from '@ant-design/icons';
+import { PlusOutlined, CalendarOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { employees, sectionsData, departmentOptions } from '../mock/employees';
 import { attendanceRecords } from '../mock/attendance';
 import AttendanceCalendar from '../components/AttendanceCalendar';
 import AttendanceSidebar from '../components/AttendanceSidebar';
+import '../styles/attendance.css';
 
 const activeEmployees = employees.filter((e) => e.isActive);
 
@@ -13,13 +14,16 @@ const legendItems = [
   { label: '出差', dotColor: '#22c55e', bg: 'rgba(34,197,94,0.08)', text: '#166534' },
   { label: '請假', dotColor: '#f97316', bg: 'rgba(249,115,22,0.08)', text: '#9a3412' },
   { label: '公假', dotColor: '#3b82f6', bg: 'rgba(59,130,246,0.08)', text: '#1e40af' },
+  { label: 'Training', dotColor: '#a855f7', bg: 'rgba(168,85,247,0.08)', text: '#6b21a8' },
+  { label: 'FWA', dotColor: '#06b6d4', bg: 'rgba(6,182,212,0.08)', text: '#155e75' },
 ];
 
-export default function AttendanceSheet() {
+export default function AttendanceRecord() {
   const [currentMonth, setCurrentMonth] = useState(dayjs());
   const [selectedDept, setSelectedDept] = useState(null);
   const [selectedSection, setSelectedSection] = useState(null);
   const [selectedDate, setSelectedDate] = useState(dayjs());
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const year = currentMonth.year();
   const month = currentMonth.month();
@@ -55,6 +59,7 @@ export default function AttendanceSheet() {
 
   const handleDateClick = (date) => {
     setSelectedDate(date);
+    setSidebarOpen(true);
   };
 
   return (
@@ -111,7 +116,7 @@ export default function AttendanceSheet() {
       </div>
 
       {/* Main Content */}
-      <div className="att-main">
+      <div className={`att-main ${sidebarOpen ? '' : 'sidebar-collapsed'}`}>
         <div className="att-calendar-wrap">
           <AttendanceCalendar
             year={year}
@@ -121,6 +126,9 @@ export default function AttendanceSheet() {
             onDateClick={handleDateClick}
             selectedDate={selectedDate}
           />
+        </div>
+        <div className="att-sidebar-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>
+          {sidebarOpen ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
         </div>
         <div className="att-sidebar-wrap">
           <AttendanceSidebar

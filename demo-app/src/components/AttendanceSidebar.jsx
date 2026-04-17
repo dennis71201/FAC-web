@@ -5,6 +5,8 @@ const tagStyleMap = {
   '出差': { background: 'rgba(34, 197, 94, 0.1)', color: '#166534' },
   '請假': { background: 'rgba(249, 115, 22, 0.1)', color: '#9a3412' },
   '公假': { background: 'rgba(59, 130, 246, 0.1)', color: '#1e40af' },
+  'Training': { background: 'rgba(168, 85, 247, 0.1)', color: '#6b21a8' },
+  'FWA': { background: 'rgba(6, 182, 212, 0.1)', color: '#155e75' },
 };
 
 export default function AttendanceSidebar({ selectedDate, records, employees }) {
@@ -17,7 +19,7 @@ export default function AttendanceSidebar({ selectedDate, records, employees }) 
 
   // Calculate summary stats
   const summary = useMemo(() => {
-    const counts = { '出差': new Set(), '請假': new Set(), '公假': new Set() };
+    const counts = { '出差': new Set(), '請假': new Set(), '公假': new Set(), 'Training': new Set(), 'FWA': new Set() };
     dayRecords.forEach((r) => {
       if (counts[r.type]) counts[r.type].add(r.employeeId);
     });
@@ -25,6 +27,8 @@ export default function AttendanceSidebar({ selectedDate, records, employees }) 
       tripCount: counts['出差'].size,
       leaveCount: counts['請假'].size,
       officialCount: counts['公假'].size,
+      trainingCount: counts['Training'].size,
+      fwaCount: counts['FWA'].size,
     };
   }, [dayRecords]);
 
@@ -56,7 +60,7 @@ export default function AttendanceSidebar({ selectedDate, records, employees }) 
           <h3>日出勤摘要</h3>
           <span className="card-date-badge">{dateStr}</span>
         </div>
-        <div className="card-stats card-stats-3">
+        <div className="card-stats card-stats-5">
           <div className="stat-box">
             <div className="stat-label">出差</div>
             <div className="stat-value" style={{ color: '#166534' }}>
@@ -78,6 +82,20 @@ export default function AttendanceSidebar({ selectedDate, records, employees }) 
               <span className="stat-unit">人</span>
             </div>
           </div>
+          <div className="stat-box">
+            <div className="stat-label">Training</div>
+            <div className="stat-value" style={{ color: '#7c3aed' }}>
+              {summary.trainingCount}
+              <span className="stat-unit">人</span>
+            </div>
+          </div>
+          <div className="stat-box">
+            <div className="stat-label">FWA</div>
+            <div className="stat-value" style={{ color: '#0891b2' }}>
+              {summary.fwaCount}
+              <span className="stat-unit">人</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -89,7 +107,7 @@ export default function AttendanceSidebar({ selectedDate, records, employees }) 
         </div>
         {Object.keys(detailGroups).length === 0 ? (
           <div style={{ fontSize: 12, color: '#94a3b8', textAlign: 'center', padding: '16px 0' }}>
-            此日無出差/請假/公假紀錄
+            此日無出勤紀錄
           </div>
         ) : (
           Object.entries(detailGroups).map(([groupLabel, items]) => (
