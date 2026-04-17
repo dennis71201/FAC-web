@@ -3,9 +3,10 @@ import { Select, DatePicker, FloatButton } from 'antd';
 import { PlusOutlined, CalendarOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { employees, sectionsData, departmentOptions } from '../mock/employees';
-import { attendanceRecords } from '../mock/attendance';
-import AttendanceCalendar from '../components/AttendanceCalendar';
-import AttendanceSidebar from '../components/AttendanceSidebar';
+import { attendanceRecords as initialRecords } from '../mock/attendance';
+import AttendanceCalendar from '../components/attendance/AttendanceCalendar';
+import AttendanceSidebar from '../components/attendance/AttendanceSidebar';
+import AddAttendanceModal from '../components/attendance/AddAttendanceModal';
 import '../styles/attendance.css';
 
 const activeEmployees = employees.filter((e) => e.isActive);
@@ -23,7 +24,9 @@ export default function AttendanceRecord() {
   const [selectedDept, setSelectedDept] = useState(null);
   const [selectedSection, setSelectedSection] = useState(null);
   const [selectedDate, setSelectedDate] = useState(dayjs());
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [records, setRecords] = useState(initialRecords);
 
   const year = currentMonth.year();
   const month = currentMonth.month();
@@ -49,8 +52,28 @@ export default function AttendanceRecord() {
   // Filter attendance records to matching employees
   const filteredRecords = useMemo(() => {
     const empIds = new Set(filteredEmployees.map((e) => e.key));
-    return attendanceRecords.filter((r) => empIds.has(r.employeeId));
-  }, [filteredEmployees]);
+    return records.filter((r) => empIds.has(r.employeeId));
+  }, [filteredEmployees, records]);
+
+  const handleDeleteRecord = (recordId) => {
+    setRecords((prev) => prev.filter((r) => r.id !== recordId));
+  };
+
+  const handleAddRecord = (data) => {
+    const newRecord = {
+      id: Date.now(),
+      employeeId: '1', // 王小明 — current logged-in user
+      type: data.type,
+      startDate: data.startDate.format('YYYY-MM-DD'),
+      endDate: data.endDate.format('YYYY-MM-DD'),
+      startTime: data.isAllDay ? null : data.startTime?.format('HH:mm'),
+      endTime: data.isAllDay ? null : data.endTime?.format('HH:mm'),
+      isAllDay: data.isAllDay,
+      note: data.note || '',
+    };
+    setRecords((prev) => [...prev, newRecord]);
+    setModalVisible(false);
+  };
 
   const handleDeptChange = (value) => {
     setSelectedDept(value || null);
@@ -135,6 +158,7 @@ export default function AttendanceRecord() {
             selectedDate={selectedDate}
             records={filteredRecords}
             employees={filteredEmployees}
+            onDelete={handleDeleteRecord}
           />
         </div>
       </div>
@@ -144,6 +168,14 @@ export default function AttendanceRecord() {
         icon={<PlusOutlined />}
         type="primary"
         tooltip="新增出勤紀錄"
+        onClick={() => setModalVisible(true)}
+      />
+
+      <AddAttendanceModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onSubmit={handleAddRecord}
+        defaultDate={selectedDate}
       />
     </div>
   );

@@ -439,13 +439,7 @@
   border: 1px solid rgba(173, 179, 181, 0.05);
   display: flex;
   flex-direction: column;
-  gap: 10px;
-}
-
-.att-leave-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  gap: 4px;
 }
 
 .att-leave-row .leave-name {
@@ -459,6 +453,136 @@
   padding: 3px 8px;
   border-radius: 4px;
   font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ---- Accordion row ---- */
+.att-leave-row {
+  display: flex;
+  flex-direction: column;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.att-leave-row-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 6px 0;
+  user-select: none;
+}
+
+.att-leave-row-header .leave-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-on-surface);
+  flex-shrink: 0;
+}
+
+.att-leave-row-header .leave-tags-inline {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.att-leave-row-header .leave-chevron {
+  font-size: 10px;
+  color: var(--color-on-surface-variant);
+  transition: transform 0.25s ease;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.att-leave-row-header .leave-chevron.open {
+  transform: rotate(180deg);
+}
+
+/* Expanded body — animate with max-height */
+.att-leave-row-body {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.3s ease, opacity 0.25s ease, padding 0.25s ease;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.att-leave-row.expanded .att-leave-row-body {
+  max-height: 500px;
+  opacity: 1;
+  padding: 8px 0 4px;
+}
+
+/* Record detail row */
+.att-record-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 10px;
+  background: var(--color-surface-container-low);
+  border-radius: 6px;
+  border: 1px solid rgba(173, 179, 181, 0.08);
+}
+
+.att-record-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.att-record-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.att-duration {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-on-surface);
+}
+
+.att-date-range {
+  font-size: 10px;
+  color: var(--color-on-surface-variant);
+  white-space: nowrap;
+}
+
+.att-record-note {
+  font-size: 11px;
+  color: var(--color-on-surface-variant);
+  padding: 2px 0 0 2px;
+  word-break: break-word;
+}
+
+/* Delete button */
+.att-delete-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: none;
+  color: var(--color-on-surface-variant);
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 12px;
+  flex-shrink: 0;
+  transition: color 0.2s, background 0.2s;
+}
+
+.att-delete-btn:hover {
+  color: var(--color-error);
+  background: rgba(168, 56, 54, 0.08);
 }
 
 /* FAB override for attendance page */
@@ -503,5 +627,367 @@
   .att-calendar-cell .cell-entry {
     font-size: 8px;
     padding: 1px 4px;
+  }
+}
+
+/* ============================================
+   Add Attendance Modal
+   ============================================ */
+
+/* Overlay — glassmorphism backdrop */
+.att-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(248, 249, 250, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  animation: att-modal-fade-in 0.25s ease;
+}
+
+@keyframes att-modal-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Card container */
+.att-modal-card {
+  width: 100%;
+  max-width: 520px;
+  background: var(--color-surface-container-lowest);
+  border-radius: 16px;
+  box-shadow: 0 0 24px 0 rgba(45, 51, 53, 0.06);
+  border: 1px solid rgba(173, 179, 181, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: att-modal-scale-in 0.25s ease;
+}
+
+@keyframes att-modal-scale-in {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Header */
+.att-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 32px 32px 16px;
+}
+
+.att-modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-on-surface);
+  letter-spacing: -0.02em;
+}
+
+.att-modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  color: var(--color-on-surface-variant);
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: color 0.2s, background 0.2s;
+}
+
+.att-modal-close:hover {
+  color: var(--color-on-surface);
+  background: var(--color-surface-container-high);
+}
+
+/* Body */
+.att-modal-body {
+  padding: 0 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* Field label */
+.att-modal-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--color-on-surface-variant);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+/* Type chips */
+.att-modal-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.att-modal-chip {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  line-height: 1;
+}
+
+.att-modal-chip:hover {
+  filter: brightness(0.95);
+}
+
+.att-modal-chip.active {
+  font-weight: 800;
+  box-shadow: inset 0 0 0 1.5px currentColor;
+}
+
+/* Chip color variants */
+.att-modal-chip[data-type="出差"] {
+  background: rgba(34, 197, 94, 0.1);
+  color: #166534;
+}
+.att-modal-chip[data-type="出差"].active {
+  background: rgba(34, 197, 94, 0.2);
+  box-shadow: inset 0 0 0 1.5px rgba(34, 197, 94, 0.4);
+}
+
+.att-modal-chip[data-type="請假"] {
+  background: rgba(249, 115, 22, 0.1);
+  color: #9a3412;
+}
+.att-modal-chip[data-type="請假"].active {
+  background: rgba(249, 115, 22, 0.2);
+  box-shadow: inset 0 0 0 1.5px rgba(249, 115, 22, 0.4);
+}
+
+.att-modal-chip[data-type="公假"] {
+  background: rgba(59, 130, 246, 0.1);
+  color: #1e40af;
+}
+.att-modal-chip[data-type="公假"].active {
+  background: rgba(59, 130, 246, 0.2);
+  box-shadow: inset 0 0 0 1.5px rgba(59, 130, 246, 0.4);
+}
+
+.att-modal-chip[data-type="Training"] {
+  background: rgba(168, 85, 247, 0.1);
+  color: #6b21a8;
+}
+.att-modal-chip[data-type="Training"].active {
+  background: rgba(168, 85, 247, 0.2);
+  box-shadow: inset 0 0 0 1.5px rgba(168, 85, 247, 0.4);
+}
+
+.att-modal-chip[data-type="FWA"] {
+  background: rgba(6, 182, 212, 0.1);
+  color: #155e75;
+}
+.att-modal-chip[data-type="FWA"].active {
+  background: rgba(6, 182, 212, 0.2);
+  box-shadow: inset 0 0 0 1.5px rgba(6, 182, 212, 0.4);
+}
+
+/* Time section header row */
+.att-modal-time-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.att-modal-time-header .att-modal-label {
+  margin-bottom: 0;
+}
+
+.att-modal-allday {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.att-modal-allday input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1.5px solid rgba(173, 179, 181, 0.3);
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.att-modal-allday span {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-on-surface-variant);
+  transition: color 0.2s;
+}
+
+.att-modal-allday:hover span {
+  color: var(--color-on-surface);
+}
+
+/* Time grid: 2-column for start/end */
+.att-modal-time-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.att-modal-time-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.att-modal-time-col .col-label {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--color-on-surface-variant);
+}
+
+/* Ant Design picker overrides inside modal */
+.att-modal-body .ant-picker {
+  background: var(--color-surface-container-low);
+  border: 1px solid rgba(173, 179, 181, 0.05);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: border-color 0.2s;
+}
+
+.att-modal-body .ant-picker:hover,
+.att-modal-body .ant-picker-focused {
+  border-color: var(--color-primary);
+}
+
+.att-modal-body .ant-picker .ant-picker-input > input {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* Note textarea */
+.att-modal-note textarea,
+.att-modal-note .ant-input {
+  width: 100%;
+  background: var(--color-surface-container-low);
+  border: 1px solid rgba(173, 179, 181, 0.1);
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 13px;
+  color: var(--color-on-surface);
+  resize: vertical;
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+
+.att-modal-note textarea:focus,
+.att-modal-note .ant-input:focus,
+.att-modal-note .ant-input-focused {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+.att-modal-note textarea::placeholder {
+  color: var(--color-outline-variant);
+}
+
+/* Action buttons */
+.att-modal-actions {
+  display: flex;
+  gap: 12px;
+  padding: 32px;
+}
+
+.att-modal-btn-cancel {
+  flex: 1;
+  padding: 12px 24px;
+  border: 1px solid rgba(173, 179, 181, 0.2);
+  background: none;
+  color: var(--color-on-surface);
+  font-weight: 700;
+  font-size: 13px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.att-modal-btn-cancel:hover {
+  background: var(--color-surface-container-low);
+}
+
+.att-modal-btn-submit {
+  flex: 2;
+  padding: 12px 24px;
+  border: none;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-container));
+  color: var(--color-on-primary);
+  font-weight: 700;
+  font-size: 13px;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 0 24px 0 rgba(45, 51, 53, 0.06);
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.att-modal-btn-submit:hover {
+  opacity: 0.9;
+}
+
+.att-modal-btn-submit:active {
+  transform: scale(0.98);
+}
+
+.att-modal-btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.att-modal-btn-submit:disabled:hover {
+  opacity: 0.5;
+}
+
+/* Responsive modal */
+@media (max-width: 640px) {
+  .att-modal-overlay {
+    padding: 12px;
+    align-items: flex-end;
+  }
+
+  .att-modal-card {
+    max-width: 100%;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .att-modal-header {
+    padding: 24px 20px 12px;
+  }
+
+  .att-modal-body {
+    padding: 0 20px;
+    gap: 20px;
+  }
+
+  .att-modal-actions {
+    padding: 24px 20px;
+  }
+
+  .att-modal-time-grid {
+    grid-template-columns: 1fr;
   }
 }
