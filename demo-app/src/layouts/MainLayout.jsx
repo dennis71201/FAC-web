@@ -2,64 +2,15 @@ import { useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Layout, Menu, Avatar, Tag, Space, Typography, Breadcrumb } from 'antd';
 import {
-  ToolOutlined,
-  AlertOutlined,
-  CalendarOutlined,
-  SwapOutlined,
-  SettingOutlined,
-  TeamOutlined,
   UserOutlined,
   AppstoreOutlined,
 } from '@ant-design/icons';
+import { buildMenuItems, breadcrumbMap } from '../config/routes';
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
 
-const menuItems = [
-  {
-    key: '/equipment',
-    icon: <ToolOutlined />,
-    label: 'Equipment Tracking',
-  },
-  {
-    key: '/alarm',
-    icon: <AlertOutlined />,
-    label: 'Alarm',
-  },
-  // {
-  //   key: '/attendance',
-  //   icon: <CalendarOutlined />,
-  //   label: 'Attendance Sheet',
-  // },
-  {
-    key: '/passdown',
-    icon: <SwapOutlined />,
-    label: 'Passdown',
-  },
-  {
-    type: 'divider',
-  },
-  {
-    key: 'system',
-    icon: <SettingOutlined />,
-    label: '系統管理',
-    children: [
-      {
-        key: '/employees',
-        icon: <TeamOutlined />,
-        label: '員工表管理',
-      },
-    ],
-  },
-];
-
-const breadcrumbMap = {
-  '/equipment': 'Equipment Tracking',
-  '/alarm': 'Alarm',
-  '/attendance': 'Attendance Sheet',
-  '/passdown': 'Passdown',
-  '/employees': '員工表管理',
-};
+const menuItems = buildMenuItems();
 
 export default function MainLayout() {
   const [collapsed, setCollapsed] = useState(false);

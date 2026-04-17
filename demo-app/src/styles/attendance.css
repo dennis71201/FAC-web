@@ -1,0 +1,507 @@
+/* ============================================
+   Attendance Page — Editorial Design System
+   ============================================ */
+
+.attendance-page {
+  --color-primary: #4456ba;
+  --color-primary-container: #8596ff;
+  --color-on-primary: #faf8ff;
+  --color-surface: #f8f9fa;
+  --color-surface-container-low: #f1f4f5;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-high: #e5e9eb;
+  --color-on-surface: #2d3335;
+  --color-on-surface-variant: #5a6062;
+  --color-outline-variant: #adb3b5;
+  --color-error: #a83836;
+  --color-error-container: #fa746f;
+
+  --color-tag-work-bg: rgba(34, 197, 94, 0.15);
+  --color-tag-work-text: #166534;
+  --color-tag-leave-bg: rgba(249, 115, 22, 0.15);
+  --color-tag-leave-text: #9a3412;
+  --color-tag-training-bg: rgba(133, 150, 255, 0.2);
+  --color-tag-training-text: #4456ba;
+  --color-tag-official-bg: rgba(59, 130, 246, 0.15);
+  --color-tag-official-text: #1e40af;
+  --color-tag-sick-bg: rgba(250, 116, 111, 0.2);
+  --color-tag-sick-text: #a83836;
+  --color-tag-personal-bg: rgba(249, 115, 22, 0.15);
+  --color-tag-personal-text: #9a3412;
+  --color-tag-annual-bg: rgba(139, 92, 246, 0.15);
+  --color-tag-annual-text: #6d28d9;
+
+  font-family: 'Inter', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--color-on-surface);
+}
+
+/* Page Header */
+.attendance-page .att-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.attendance-page .att-header-title h4 {
+  margin: 0 0 2px 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-on-surface);
+}
+
+.attendance-page .att-header-title p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-on-surface-variant);
+}
+
+.attendance-page .att-header-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Legend Bar */
+.attendance-page .att-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 20px;
+  background: var(--color-surface-container-low);
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.attendance-page .att-legend-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-on-surface-variant);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-right: 4px;
+}
+
+.attendance-page .att-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.attendance-page .att-legend-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+/* Main Content Layout */
+.attendance-page .att-main {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  position: relative;
+}
+
+.attendance-page .att-calendar-wrap {
+  flex: 1;
+  min-width: 0;
+  transition: flex 0.3s ease;
+}
+
+.attendance-page .att-sidebar-wrap {
+  width: 320px;
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: width 0.3s ease, opacity 0.3s ease;
+  opacity: 1;
+}
+
+.attendance-page .att-main.sidebar-collapsed .att-sidebar-wrap {
+  width: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.attendance-page .att-sidebar-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--color-surface-container-high);
+  border: 1px solid rgba(173, 179, 181, 0.15);
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: 14px;
+  color: var(--color-on-surface-variant);
+  transition: background 0.2s ease, color 0.2s ease;
+  margin-top: 4px;
+}
+
+.attendance-page .att-sidebar-toggle:hover {
+  background: var(--color-surface-container-highest);
+  color: var(--color-on-surface);
+}
+
+/* Calendar Grid */
+.att-calendar {
+  background: var(--color-surface-container-low);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(173, 179, 181, 0.1);
+}
+
+.att-calendar-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background: var(--color-surface-container-high);
+  border-bottom: 1px solid rgba(173, 179, 181, 0.1);
+}
+
+.att-calendar-header-cell {
+  padding: 12px 0;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+}
+
+.att-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+}
+
+.att-calendar-cell {
+  background: var(--color-surface-container-lowest);
+  min-height: 110px;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  position: relative;
+}
+
+.att-calendar-cell:hover {
+  background: rgba(68, 86, 186, 0.03);
+}
+
+.att-calendar-cell.weekend {
+  background: var(--color-surface-container-low);
+}
+
+.att-calendar-cell.outside {
+  opacity: 0.4;
+}
+
+.att-calendar-cell.today {
+  background: var(--color-surface-container-lowest);
+  box-shadow: inset 0 0 0 2px var(--color-primary);
+  z-index: 2;
+}
+
+.att-calendar-cell.selected {
+  background: rgba(68, 86, 186, 0.04);
+}
+
+.att-calendar-cell .cell-day {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-on-surface);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.att-calendar-cell.today .cell-day-number {
+  background: rgba(68, 86, 186, 0.1);
+  color: var(--color-primary);
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: 900;
+  font-size: 15px;
+}
+
+.att-calendar-cell .cell-today-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-primary);
+  animation: att-pulse 2s ease-in-out infinite;
+}
+
+@keyframes att-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.att-calendar-cell .cell-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.att-calendar-cell .cell-dept-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  line-height: 1;
+}
+
+.att-calendar-cell .cell-dept-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-on-surface-variant);
+  min-width: 52px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.att-calendar-cell .cell-dept-badges {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+}
+
+.att-calendar-cell .cell-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.cell-badge.type-出差 {
+  background: rgba(34, 197, 94, 0.15);
+  color: #166534;
+}
+
+.cell-badge.type-請假 {
+  background: rgba(249, 115, 22, 0.15);
+  color: #9a3412;
+}
+
+.cell-badge.type-公假 {
+  background: rgba(59, 130, 246, 0.15);
+  color: #1e40af;
+}
+
+.cell-badge.type-training {
+  background: rgba(168, 85, 247, 0.15);
+  color: #6b21a8;
+}
+
+.cell-badge.type-fwa {
+  background: rgba(6, 182, 212, 0.15);
+  color: #155e75;
+}
+
+/* Sidebar */
+.att-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.att-sidebar-card {
+  background: var(--color-surface-container-low);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid rgba(173, 179, 181, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.att-sidebar-card .card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.att-sidebar-card .card-header h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-on-surface);
+}
+
+.att-sidebar-card .card-date-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-primary);
+  background: rgba(68, 86, 186, 0.1);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.att-sidebar-card .card-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.att-sidebar-card .card-stats.card-stats-3 {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.att-sidebar-card .card-stats.card-stats-5 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.att-sidebar-card .stat-box {
+  background: var(--color-surface-container-lowest);
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(173, 179, 181, 0.05);
+}
+
+.att-sidebar-card .stat-box .stat-label {
+  font-size: 11px;
+  color: var(--color-on-surface-variant);
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.att-sidebar-card .stat-box .stat-value {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.att-sidebar-card .stat-box .stat-unit {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--color-on-surface-variant);
+  margin-left: 2px;
+}
+
+/* Leave List */
+.att-sidebar-card .leave-list-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-on-surface);
+  margin-bottom: 14px;
+}
+
+.att-leave-group {
+  margin-bottom: 12px;
+}
+
+.att-leave-group:last-child {
+  margin-bottom: 0;
+}
+
+.att-leave-group-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.att-leave-group-header .group-bar {
+  width: 3px;
+  height: 14px;
+  border-radius: 2px;
+  background: var(--color-primary);
+}
+
+.att-leave-group-header .group-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+}
+
+.att-leave-group-list {
+  background: var(--color-surface-container-lowest);
+  border-radius: 8px;
+  padding: 12px;
+  border: 1px solid rgba(173, 179, 181, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.att-leave-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.att-leave-row .leave-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-on-surface);
+}
+
+.att-leave-row .leave-type-tag {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+/* FAB override for attendance page */
+.attendance-page .ant-float-btn {
+  inset-inline-end: 24px !important;
+  inset-block-end: 24px !important;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .attendance-page .att-main {
+    flex-direction: column;
+  }
+
+  .attendance-page .att-sidebar-wrap {
+    width: 100%;
+  }
+
+  .attendance-page .att-main.sidebar-collapsed .att-sidebar-wrap {
+    width: 100%;
+    height: 0;
+  }
+
+  .attendance-page .att-sidebar-toggle {
+    position: absolute;
+    right: 0;
+    top: -40px;
+  }
+}
+
+@media (max-width: 640px) {
+  .attendance-page .att-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .att-calendar-cell {
+    min-height: 80px;
+    padding: 6px;
+  }
+
+  .att-calendar-cell .cell-entry {
+    font-size: 8px;
+    padding: 1px 4px;
+  }
+}
