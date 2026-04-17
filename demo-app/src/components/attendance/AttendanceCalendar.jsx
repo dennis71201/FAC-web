@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import dayjs from 'dayjs';
+import { getRecordsForDate } from '../../mock/attendance';
 
 const weekdays = ['週日', '週一', '週二', '週三', '週四', '週五', '週六'];
 
@@ -64,17 +65,24 @@ export default function AttendanceCalendar({ year, month, records, employees, on
   }, [employees]);
 
   // Group records by date → { dept → { type → count } }
+  // For each calendar day, find all records overlapping that date
   const summaryByDate = useMemo(() => {
     const map = {};
-    records.forEach((r) => {
-      const dept = empDeptMap[r.employeeId];
-      if (!dept) return;
-      if (!map[r.date]) map[r.date] = {};
-      if (!map[r.date][dept]) map[r.date][dept] = {};
-      map[r.date][dept][r.type] = (map[r.date][dept][r.type] || 0) + 1;
+    calendarDays.forEach(({ date }) => {
+      const dateStr = date.format('YYYY-MM-DD');
+      const dayRecords = getRecordsForDate(records, dateStr);
+      if (dayRecords.length === 0) return;
+      const deptMap = {};
+      dayRecords.forEach((r) => {
+        const dept = empDeptMap[r.employeeId];
+        if (!dept) return;
+        if (!deptMap[dept]) deptMap[dept] = {};
+        deptMap[dept][r.type] = (deptMap[dept][r.type] || 0) + 1;
+      });
+      map[dateStr] = deptMap;
     });
     return map;
-  }, [records, empDeptMap]);
+  }, [records, empDeptMap, calendarDays]);
 
   return (
     <div className="att-calendar">
