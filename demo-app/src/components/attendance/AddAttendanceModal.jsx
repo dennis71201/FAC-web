@@ -1,33 +1,40 @@
 import { useState, useEffect, useCallback } from 'react';
-import { DatePicker, TimePicker, Input } from 'antd';
+import { Alert, DatePicker, TimePicker, Input } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
-import { attendanceTypes } from '../../mock/attendance';
-
-const typeKeys = Object.keys(attendanceTypes);
 
 const defaultStartTime = dayjs().hour(9).minute(0).second(0);
 const defaultEndTime = dayjs().hour(18).minute(0).second(0);
 
-export default function AddAttendanceModal({ visible, onClose, onSubmit, defaultDate }) {
-  const [selectedType, setSelectedType] = useState(null);
+export default function AddAttendanceModal({
+  visible,
+  onClose,
+  onSubmit,
+  defaultDate,
+  attendanceTypes,
+  submitting,
+}) {
+  const typeOptions = attendanceTypes || [];
+  const [selectedTypeId, setSelectedTypeId] = useState(null);
   const [isAllDay, setIsAllDay] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [startTime, setStartTime] = useState(defaultStartTime);
   const [endTime, setEndTime] = useState(defaultEndTime);
   const [note, setNote] = useState('');
+  const [timeError, setTimeError] = useState('');
 
   // Reset form when modal opens
   useEffect(() => {
     if (visible) {
-      setSelectedType(null);
+      setSelectedTypeId(null);
       setIsAllDay(false);
       setStartDate(defaultDate || dayjs());
       setEndDate(defaultDate || dayjs());
       setStartTime(defaultStartTime);
       setEndTime(defaultEndTime);
       setNote('');
+      setTimeError('');
     }
   }, [visible, defaultDate]);
 
@@ -45,7 +52,7 @@ export default function AddAttendanceModal({ visible, onClose, onSubmit, default
 
   if (!visible) return null;
 
-  const canSubmit = selectedType && startDate && endDate;
+  const canSubmit = selectedTypeId && startDate && endDate && !timeError;
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) onClose();
@@ -56,18 +63,36 @@ export default function AddAttendanceModal({ visible, onClose, onSubmit, default
     if (d && endDate && d.isAfter(endDate, 'day')) {
       setEndDate(d);
     }
+    setTimeError('');
   };
+
+  const combineDateTime = (dateValue, timeValue) => dateValue
+    .hour(timeValue.hour())
+    .minute(timeValue.minute())
+    .second(0)
+    .millisecond(0);
 
   const handleSubmit = () => {
     if (!canSubmit) return;
+
+    const rangeStart = isAllDay
+      ? startDate.startOf('day')
+      : combineDateTime(startDate, startTime);
+    const rangeEnd = isAllDay
+      ? endDate.endOf('day')
+      : combineDateTime(endDate, endTime);
+
+    if (!rangeEnd.isAfter(rangeStart)) {
+      setTimeError('結束時間需晚於開始時間，跨日時請調整日期。');
+      return;
+    }
+
     onSubmit({
-      type: selectedType,
-      startDate,
-      endDate,
-      startTime: isAllDay ? null : startTime,
-      endTime: isAllDay ? null : endTime,
+      attendanceTypeId: selectedTypeId,
+      startTime: rangeStart.toISOString(),
+      endTime: rangeEnd.toISOString(),
       isAllDay,
-      note,
+      note: note.trim(),
     });
   };
 
@@ -88,15 +113,18 @@ export default function AddAttendanceModal({ visible, onClose, onSubmit, default
           <div>
             <span className="att-modal-label">出勤類別</span>
             <div className="att-modal-chips">
-              {typeKeys.map((type) => (
+              {typeOptions.map((type) => (
                 <button
-                  key={type}
+                  key={type.id}
                   type="button"
-                  className={`att-modal-chip ${selectedType === type ? 'active' : ''}`}
-                  data-type={type}
-                  onClick={() => setSelectedType(type)}
+                  className={`att-modal-chip ${selectedTypeId === type.id ? 'active' : ''}`}
+                  data-type={type.name}
+                  onClick={() => {
+                    setSelectedTypeId(type.id);
+                    setTimeError('');
+                  }}
                 >
-                  {attendanceTypes[type].label}
+                  {type.name}
                 </button>
               ))}
             </div>
@@ -110,7 +138,10 @@ export default function AddAttendanceModal({ visible, onClose, onSubmit, default
                 <input
                   type="checkbox"
                   checked={isAllDay}
-                  onChange={(e) => setIsAllDay(e.target.checked)}
+                  onChange={(e) => {
+                    setIsAllDay(e.target.checked);
+                    setTimeError('');
+                  }}
                 />
                 <span>全天</span>
               </label>
@@ -128,7 +159,12 @@ export default function AddAttendanceModal({ visible, onClose, onSubmit, default
                 {!isAllDay && (
                   <TimePicker
                     value={startTime}
-                    onChange={setStartTime}
+                    onChange={(value) => {
+                      if (value) {
+                        setStartTime(value);
+                        setTimeError('');
+                      }
+                    }}
                     format="hh:mm A"
                     use12Hours
                     allowClear={false}
@@ -141,7 +177,10 @@ export default function AddAttendanceModal({ visible, onClose, onSubmit, default
                 <span className="col-label">結束</span>
                 <DatePicker
                   value={endDate}
-                  onChange={setEndDate}
+                  onChange={(value) => {
+                    setEndDate(value);
+                    setTimeError('');
+                  }}
                   allowClear={false}
                   disabledDate={(d) => startDate && d.isBefore(startDate, 'day')}
                   style={{ width: '100%' }}
@@ -149,7 +188,12 @@ export default function AddAttendanceModal({ visible, onClose, onSubmit, default
                 {!isAllDay && (
                   <TimePicker
                     value={endTime}
-                    onChange={setEndTime}
+                    onChange={(value) => {
+                      if (value) {
+                        setEndTime(value);
+                        setTimeError('');
+                      }
+                    }}
                     format="hh:mm A"
                     use12Hours
                     allowClear={false}
@@ -171,6 +215,8 @@ export default function AddAttendanceModal({ visible, onClose, onSubmit, default
               autoSize={{ minRows: 2, maxRows: 4 }}
             />
           </div>
+
+          {timeError && <Alert type="error" showIcon title={timeError} />}
         </div>
 
         {/* Actions */}
@@ -181,10 +227,10 @@ export default function AddAttendanceModal({ visible, onClose, onSubmit, default
           <button
             type="button"
             className="att-modal-btn-submit"
-            disabled={!canSubmit}
+            disabled={!canSubmit || submitting}
             onClick={handleSubmit}
           >
-            提交申請
+            {submitting ? '提交中...' : '提交申請'}
           </button>
         </div>
       </div>

@@ -18,6 +18,9 @@
    + EmployeeSection
       - Data Type: nvarchar (200)
       - Nullable: NOT NULL
+   + DepartmentAndSectionId
+      - Data Type: int
+      - Nullable: NOT NULL
    + CreateTime
       - Data Type: datetime2 (0)
       - Nullable: NOT NULL
@@ -73,5 +76,16 @@
       - Data Type: nvarchar (50)
       - Nullable: NOT NULL
    + Permission
-      - Data Type: nvarchar (1000)
+      - Data Type: json
       - Nullable: NULL
+
+### DepartmentAndSection
+   + DepartmentAndSectionId (PK)  IDENTITY(1,1)
+      - Data Type: int
+      - Nullable: NOT NULL
+   + DepartmentName
+      - Data Type: nvarchar(200)
+      - Nullable: NOT NULL
+   + SectionName
+      - Data Type: nvarchar(200)
+      - Nullable: NOT NULL

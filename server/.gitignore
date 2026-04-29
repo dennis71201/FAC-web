@@ -7,6 +7,8 @@ yarn.lock
 .env
 .env.local
 .env.*.local
+.env*
+!.env.example
 
 # Logs
 *.log
@@ -34,3 +36,13 @@ out/
 # Runtime
 tmp/
 temp/
+
+# Secrets and certificates
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Uploads and coverage
+uploads/
+coverage/

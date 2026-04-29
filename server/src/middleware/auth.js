@@ -27,17 +27,6 @@ export async function verifyToken(req, res, next) {
     // Extract Bearer token from Authorization header
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      // Dev bypass: allow ?dev_employee_id query param in development
-      if (env.NODE_ENV === 'development' && env.AUTH_DEV_BYPASS && req.query.dev_employee_id) {
-        req.user = {
-          employeeId: parseInt(req.query.dev_employee_id, 10),
-          role: 'admin', // dev bypass always admin for testing
-          permission: null,
-          isDev: true,
-        };
-        return next();
-      }
-
       return res.status(401).json({
         error: { code: 'UNAUTHORIZED', message: 'Missing or invalid Authorization header' },
       });
@@ -57,7 +46,7 @@ export async function verifyToken(req, res, next) {
     req.user = {
       employeeId: result.payload.employeeId,
       role: result.payload.role,
-      permission: result.payload.permission,
+      permissions: result.payload.permissions || result.payload.permission || {},
       isDev: false,
     };
 
@@ -78,7 +67,7 @@ export function debugAuthStatus(req, res, next) {
     console.log('[AUTH-DEBUG]', {
       hasAuthHeader: !!req.headers.authorization,
       oidcConfigured: isOidcConfigured(),
-      devBypassEnabled: env.AUTH_DEV_BYPASS,
+      identifyFallbackEnabled: true,
     });
   }
   next();

@@ -6,6 +6,10 @@ import pinoHttp from 'pino-http';
 import env from './src/config/env.js';
 import { debugAuthStatus } from './src/middleware/auth.js';
 import healthRouter from './src/routes/health.js';
+import authRouter from './src/routes/auth.js';
+import departmentsSectionsRouter from './src/routes/departmentsSections.js';
+import employeesRouter from './src/routes/employees.js';
+import attendanceRouter from './src/routes/attendance.js';
 
 const app = express();
 
@@ -44,6 +48,10 @@ app.use(debugAuthStatus);
 
 // Routes
 app.use('/api', healthRouter);
+app.use('/api/auth', authRouter);
+app.use('/api', departmentsSectionsRouter);
+app.use('/api/employees', employeesRouter);
+app.use('/api/attendance', attendanceRouter);
 
 // 404 handler
 app.use((req, res) => {
