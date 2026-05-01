@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { Layout, Menu, Avatar, Tag, Space, Typography, Breadcrumb } from 'antd';
+import { Layout, Menu, Avatar, Tag, Space, Typography, Breadcrumb, Button } from 'antd';
 import {
   UserOutlined,
   AppstoreOutlined,
+  LogoutOutlined,
 } from '@ant-design/icons';
 import { buildMenuItems, breadcrumbMap } from '../config/routes';
+import { useAuth } from '../context/AuthContext';
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -16,9 +18,17 @@ export default function MainLayout() {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const currentPath = location.pathname;
   const openKeys = currentPath === '/employees' ? ['system'] : [];
+
+  const roleLabel = user?.role === 'Administrator' ? '管理者' : '一般使用者';
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
@@ -54,8 +64,16 @@ export default function MainLayout() {
           />
           <Space>
             <Avatar icon={<UserOutlined />} style={{ backgroundColor: '#64748B' }} />
-            <Text strong>王小明</Text>
-            <Tag color="blue">管理者</Tag>
+            <Text strong>{user?.name || '未登入使用者'}</Text>
+            <Tag color={user?.role === 'Administrator' ? 'blue' : 'default'}>{roleLabel}</Tag>
+            <Button
+              type="text"
+              icon={<LogoutOutlined />}
+              onClick={handleLogout}
+              aria-label="登出"
+            >
+              登出
+            </Button>
           </Space>
         </Header>
         <Content className="content-area">

@@ -242,7 +242,7 @@ export default function EquipmentTracking() {
 
       {isHistoryMode && (
         <Alert
-          message={`歷史紀錄模式 — 顯示 ${targetDateStr} 的設備狀態快照（唯讀）`}
+          title={`歷史紀錄模式 — 顯示 ${targetDateStr} 的設備狀態快照（唯讀）`}
           type="info"
           showIcon
           style={{ marginBottom: 12 }}

@@ -59,6 +59,7 @@ const routes = [
     path: 'employees',
     label: '員工表管理',
     icon: TeamOutlined,
+    component: EmployeeManagement,
     group: 'system',
     groupLabel: '系統管理',
     groupIcon: SettingOutlined,
