@@ -7,7 +7,9 @@
   "scripts": {
     "start": "node server.js",
     "dev": "cross-env NODE_ENV=development node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cross-env NODE_ENV=test TZ=UTC vitest run",
+    "test:watch": "cross-env NODE_ENV=test TZ=UTC vitest",
+    "test:ui": "cross-env NODE_ENV=test TZ=UTC vitest --ui"
   },
   "keywords": [
     "facilities",
@@ -29,6 +31,8 @@
     "pino-http": "^8.6.1"
   },
   "devDependencies": {
-    "cross-env": "^7.0.3"
+    "cross-env": "^7.0.3",
+    "supertest": "^7.0.0",
+    "vitest": "^2.1.0"
   }
 }
