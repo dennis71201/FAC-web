@@ -1,0 +1,38 @@
+{
+  "name": "fac-web-server",
+  "version": "1.0.0",
+  "description": "Backend API for FAC-web Facilities Management Platform",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "cross-env NODE_ENV=development node server.js",
+    "test": "cross-env NODE_ENV=test TZ=UTC vitest run",
+    "test:watch": "cross-env NODE_ENV=test TZ=UTC vitest",
+    "test:ui": "cross-env NODE_ENV=test TZ=UTC vitest --ui"
+  },
+  "keywords": [
+    "facilities",
+    "attendance",
+    "management"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mssql": "^9.1.1",
+    "dotenv": "^16.3.1",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "express-rate-limit": "^7.1.5",
+    "jose": "^4.15.4",
+    "openid-client": "^5.4.2",
+    "pino": "^8.17.2",
+    "pino-http": "^8.6.1"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "supertest": "^7.0.0",
+    "vitest": "^2.1.0"
+  }
+}

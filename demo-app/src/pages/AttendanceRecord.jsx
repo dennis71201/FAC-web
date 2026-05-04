@@ -1,56 +1,159 @@
-import { useState, useMemo } from 'react';
-import { Select, DatePicker, FloatButton } from 'antd';
+import { useState, useMemo, useEffect, useCallback } from 'react';
+import { Alert, DatePicker, FloatButton, Select, Spin, message } from 'antd';
 import { PlusOutlined, CalendarOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
-import { employees, sectionsData, departmentOptions } from '../mock/employees';
-import { attendanceRecords } from '../mock/attendance';
-import AttendanceCalendar from '../components/AttendanceCalendar';
-import AttendanceSidebar from '../components/AttendanceSidebar';
+import AttendanceCalendar from '../components/attendance/AttendanceCalendar';
+import AttendanceSidebar from '../components/attendance/AttendanceSidebar';
+import AddAttendanceModal from '../components/attendance/AddAttendanceModal';
+import { useAuth } from '../context/AuthContext';
+import {
+  createAttendanceRecord,
+  deleteAttendanceRecord,
+  getAttendanceRecords,
+  getAttendanceTypes,
+} from '../services/attendanceService';
 import '../styles/attendance.css';
 
-const activeEmployees = employees.filter((e) => e.isActive);
-
-const legendItems = [
-  { label: '出差', dotColor: '#22c55e', bg: 'rgba(34,197,94,0.08)', text: '#166534' },
-  { label: '請假', dotColor: '#f97316', bg: 'rgba(249,115,22,0.08)', text: '#9a3412' },
-  { label: '公假', dotColor: '#3b82f6', bg: 'rgba(59,130,246,0.08)', text: '#1e40af' },
-  { label: 'Training', dotColor: '#a855f7', bg: 'rgba(168,85,247,0.08)', text: '#6b21a8' },
-  { label: 'FWA', dotColor: '#06b6d4', bg: 'rgba(6,182,212,0.08)', text: '#155e75' },
-];
-
 export default function AttendanceRecord() {
+  const { user } = useAuth();
   const [currentMonth, setCurrentMonth] = useState(dayjs());
   const [selectedDept, setSelectedDept] = useState(null);
   const [selectedSection, setSelectedSection] = useState(null);
   const [selectedDate, setSelectedDate] = useState(dayjs());
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [records, setRecords] = useState([]);
+  const [attendanceTypes, setAttendanceTypes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   const year = currentMonth.year();
-  const month = currentMonth.month();
+  const month = currentMonth.month() + 1;
 
-  // Section options cascade from selected department
+  const loadAttendanceTypes = useCallback(async () => {
+    const typeList = await getAttendanceTypes();
+    setAttendanceTypes(typeList);
+  }, []);
+
+  const loadAttendanceRecords = useCallback(async () => {
+    if (!user) return;
+
+    const query = {
+      year,
+      month,
+    };
+
+    const result = await getAttendanceRecords(query);
+    setRecords(result);
+  }, [user, year, month]);
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+
+    let mounted = true;
+    const initialize = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        if (attendanceTypes.length === 0) {
+          await loadAttendanceTypes();
+        }
+        await loadAttendanceRecords();
+      } catch (apiError) {
+        if (!mounted) return;
+        setError(apiError.message || '載入出勤資料失敗，請稍後再試。');
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    initialize();
+    return () => {
+      mounted = false;
+    };
+  }, [user, loadAttendanceTypes, loadAttendanceRecords, attendanceTypes.length]);
+
+  const departmentOptions = useMemo(() => {
+    const deptSet = new Set(records.map((record) => record.employeeDepartment).filter(Boolean));
+    return Array.from(deptSet).sort().map((dept) => ({ label: dept, value: dept }));
+  }, [records]);
+
   const sectionOptions = useMemo(() => {
     if (!selectedDept) return [];
-    return (sectionsData[selectedDept] || []).map((s) => ({ label: s, value: s }));
-  }, [selectedDept]);
 
-  // Filter employees by dept/section
-  const filteredEmployees = useMemo(() => {
-    let list = activeEmployees;
-    if (selectedDept) {
-      list = list.filter((e) => e.department === selectedDept);
-    }
-    if (selectedSection) {
-      list = list.filter((e) => e.section === selectedSection);
-    }
-    return list;
-  }, [selectedDept, selectedSection]);
+    const sectionSet = new Set(
+      records
+        .filter((record) => record.employeeDepartment === selectedDept)
+        .map((record) => record.employeeSection)
+        .filter(Boolean)
+    );
 
-  // Filter attendance records to matching employees
+    return Array.from(sectionSet).sort().map((section) => ({ label: section, value: section }));
+  }, [selectedDept, records]);
+
   const filteredRecords = useMemo(() => {
-    const empIds = new Set(filteredEmployees.map((e) => e.key));
-    return attendanceRecords.filter((r) => empIds.has(r.employeeId));
-  }, [filteredEmployees]);
+    let list = records;
+
+    if (selectedDept) {
+      list = list.filter((record) => record.employeeDepartment === selectedDept);
+    }
+
+    if (selectedSection) {
+      list = list.filter((record) => record.employeeSection === selectedSection);
+    }
+
+    return list;
+  }, [selectedDept, selectedSection, records]);
+
+  const legendItems = useMemo(
+    () => attendanceTypes.map((type) => ({
+      label: type.name,
+      dotColor: type.color,
+      bg: `${type.color}1A`,
+      text: type.color,
+    })),
+    [attendanceTypes]
+  );
+
+  const handleDeleteRecord = async (recordId) => {
+    try {
+      await deleteAttendanceRecord(recordId);
+      setRecords((prev) => prev.filter((record) => record.id !== recordId));
+      message.success('出勤紀錄已刪除');
+    } catch (apiError) {
+      message.error(apiError.message || '刪除失敗，請稍後再試。');
+    }
+  };
+
+  const handleAddRecord = async (data) => {
+    if (!user) return;
+
+    const payload = {
+      employeeId: Number(user.employeeId),
+      attendanceTypeId: data.attendanceTypeId,
+      startTime: data.startTime,
+      endTime: data.endTime,
+      isAllDay: data.isAllDay,
+      note: data.note || null,
+    };
+
+    setSubmitting(true);
+    try {
+      await createAttendanceRecord(payload);
+      await loadAttendanceRecords();
+      setModalVisible(false);
+      message.success('出勤紀錄新增成功');
+    } catch (apiError) {
+      message.error(apiError.message || '新增失敗，請稍後再試。');
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const handleDeptChange = (value) => {
     setSelectedDept(value || null);
@@ -60,6 +163,19 @@ export default function AttendanceRecord() {
   const handleDateClick = (date) => {
     setSelectedDate(date);
     setSidebarOpen(true);
+  };
+
+  const handleReload = async () => {
+    setError('');
+    setLoading(true);
+    try {
+      await loadAttendanceTypes();
+      await loadAttendanceRecords();
+    } catch (apiError) {
+      setError(apiError.message || '載入出勤資料失敗，請稍後再試。');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -85,7 +201,7 @@ export default function AttendanceRecord() {
             allowClear
             value={selectedDept || undefined}
             onChange={handleDeptChange}
-            options={departmentOptions.map((d) => ({ label: d, value: d }))}
+            options={departmentOptions}
             style={{ width: 120 }}
           />
           <Select
@@ -99,6 +215,18 @@ export default function AttendanceRecord() {
           />
         </div>
       </div>
+
+      {error && (
+        <Alert
+          type="error"
+          showIcon
+          title={error}
+          action={
+            <a onClick={handleReload}>重新載入</a>
+          }
+          style={{ marginBottom: 12 }}
+        />
+      )}
 
       {/* Legend */}
       <div className="att-legend">
@@ -118,14 +246,19 @@ export default function AttendanceRecord() {
       {/* Main Content */}
       <div className={`att-main ${sidebarOpen ? '' : 'sidebar-collapsed'}`}>
         <div className="att-calendar-wrap">
-          <AttendanceCalendar
-            year={year}
-            month={month}
-            records={filteredRecords}
-            employees={filteredEmployees}
-            onDateClick={handleDateClick}
-            selectedDate={selectedDate}
-          />
+          {loading ? (
+            <div style={{ display: 'grid', placeItems: 'center', minHeight: 320 }}>
+              <Spin size="large" />
+            </div>
+          ) : (
+            <AttendanceCalendar
+              year={year}
+              month={month - 1}
+              records={filteredRecords}
+              onDateClick={handleDateClick}
+              selectedDate={selectedDate}
+            />
+          )}
         </div>
         <div className="att-sidebar-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>
           {sidebarOpen ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
@@ -134,7 +267,7 @@ export default function AttendanceRecord() {
           <AttendanceSidebar
             selectedDate={selectedDate}
             records={filteredRecords}
-            employees={filteredEmployees}
+            onDelete={handleDeleteRecord}
           />
         </div>
       </div>
@@ -144,6 +277,16 @@ export default function AttendanceRecord() {
         icon={<PlusOutlined />}
         type="primary"
         tooltip="新增出勤紀錄"
+        onClick={() => setModalVisible(true)}
+      />
+
+      <AddAttendanceModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onSubmit={handleAddRecord}
+        defaultDate={selectedDate}
+        attendanceTypes={attendanceTypes}
+        submitting={submitting}
       />
     </div>
   );

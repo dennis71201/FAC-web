@@ -1,15 +1,8 @@
 import { useMemo } from 'react';
 import dayjs from 'dayjs';
+import { buildTypeClassName, getRecordsForDate } from '../../utils/attendance';
 
 const weekdays = ['週日', '週一', '週二', '週三', '週四', '週五', '週六'];
-
-const typeConfig = {
-  '出差': { label: '出差', className: 'type-出差' },
-  '請假': { label: '請假', className: 'type-請假' },
-  '公假': { label: '公假', className: 'type-公假' },
-  'Training': { label: 'Training', className: 'type-training' },
-  'FWA': { label: 'FWA', className: 'type-fwa' },
-};
 
 function getCalendarDays(year, month) {
   const firstDay = dayjs().year(year).month(month).startOf('month');
@@ -52,29 +45,31 @@ function getCalendarDays(year, month) {
   return days;
 }
 
-export default function AttendanceCalendar({ year, month, records, employees, onDateClick, selectedDate }) {
+export default function AttendanceCalendar({ year, month, records, onDateClick, selectedDate }) {
   const today = dayjs();
   const calendarDays = useMemo(() => getCalendarDays(year, month), [year, month]);
 
-  // Build employee lookup: id → department
-  const empDeptMap = useMemo(() => {
-    const map = {};
-    employees.forEach((e) => { map[e.key] = e.department; });
-    return map;
-  }, [employees]);
-
   // Group records by date → { dept → { type → count } }
+  // For each calendar day, find all records overlapping that date
   const summaryByDate = useMemo(() => {
     const map = {};
-    records.forEach((r) => {
-      const dept = empDeptMap[r.employeeId];
-      if (!dept) return;
-      if (!map[r.date]) map[r.date] = {};
-      if (!map[r.date][dept]) map[r.date][dept] = {};
-      map[r.date][dept][r.type] = (map[r.date][dept][r.type] || 0) + 1;
+    calendarDays.forEach(({ date }) => {
+      const dateKey = date.format('YYYY-MM-DD');
+      const dayRecords = getRecordsForDate(records, date);
+      if (dayRecords.length === 0) return;
+
+      const deptMap = {};
+      dayRecords.forEach((r) => {
+        const dept = r.employeeDepartment || '未分類';
+        if (!dept) return;
+        if (!deptMap[dept]) deptMap[dept] = {};
+        const typeName = r.attendanceTypeName || '未定義';
+        deptMap[dept][typeName] = (deptMap[dept][typeName] || 0) + 1;
+      });
+      map[dateKey] = deptMap;
     });
     return map;
-  }, [records, empDeptMap]);
+  }, [records, calendarDays]);
 
   return (
     <div className="att-calendar">
@@ -106,7 +101,8 @@ export default function AttendanceCalendar({ year, month, records, employees, on
               const badges = Object.entries(types).map(([type, count]) => ({
                 type,
                 count,
-                ...(typeConfig[type] || { label: type, className: '' }),
+                label: type,
+                className: buildTypeClassName(type),
               }));
               if (badges.length > 0) {
                 deptRows.push({ dept, badges });
@@ -136,7 +132,7 @@ export default function AttendanceCalendar({ year, month, records, employees, on
                       <span className="cell-dept-badges">
                         {badges.map(({ type, count, label, className }) => (
                           <span key={type} className={`cell-badge ${className}`}>
-                            {label}{count}
+                            {label} {count}
                           </span>
                         ))}
                       </span>

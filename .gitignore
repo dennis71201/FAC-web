@@ -12,6 +12,8 @@ demo-app/.vite/
 .env
 .env.local
 .env.*.local
+.env*
+!.env.example
 
 # Logs
 *.log
@@ -35,3 +37,21 @@ desktop.ini
 
 # Claude Code plans (local only)
 .claude/plans/
+
+# Secrets and certificates
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+
+# Local runtime and data artifacts
+*.pid
+*.seed
+*.bak
+*.backup
+*.tmp
+uploads/
+server/uploads/
+coverage/
