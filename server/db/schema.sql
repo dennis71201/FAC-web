@@ -18,14 +18,14 @@ GO
 USE [MTB_FAC_OPS_WEB];
 GO
 
--- 2. DepartmentAndSection --------------------------------------------------
-IF OBJECT_ID('dbo.DepartmentAndSection', 'U') IS NULL
+-- 2. EmployeeSection -------------------------------------------------------
+IF OBJECT_ID('dbo.EmployeeSection', 'U') IS NULL
 BEGIN
-    CREATE TABLE dbo.DepartmentAndSection (
-        DepartmentAndSectionId  INT IDENTITY(1,1)  NOT NULL,
-        DepartmentName          NVARCHAR(200)      NOT NULL,
-        SectionName             NVARCHAR(200)      NOT NULL,
-        CONSTRAINT PK_DepartmentAndSection PRIMARY KEY (DepartmentAndSectionId)
+    CREATE TABLE dbo.EmployeeSection (
+        EmployeeSectionId  INT IDENTITY(1,1)  NOT NULL,
+        SectionName        NVARCHAR(200)      NOT NULL,
+        SystemName         NVARCHAR(200)      NOT NULL,
+        CONSTRAINT PK_EmployeeSection PRIMARY KEY (EmployeeSectionId)
     );
 END
 GO
@@ -50,15 +50,15 @@ BEGIN
         EmployeeName            NVARCHAR(50)       NOT NULL,
         EmployeeNumber          NVARCHAR(100)      NOT NULL,
         EmployeeEmail           NVARCHAR(150)      NOT NULL,
-        EmployeeDepartment      NVARCHAR(200)      NOT NULL,
         EmployeeSection         NVARCHAR(200)      NOT NULL,
-        DepartmentAndSectionId  INT                NOT NULL,
+        EmployeeSystem          NVARCHAR(200)      NOT NULL,
+        EmployeeSectionId       INT                NOT NULL,
         CreateTime              DATETIME2(0)       NOT NULL,
         IsAlive                 BIT                NOT NULL,
         CONSTRAINT PK_Employee PRIMARY KEY (EmployeeId),
-        CONSTRAINT FK_Employee_DepartmentAndSection
-            FOREIGN KEY (DepartmentAndSectionId)
-            REFERENCES dbo.DepartmentAndSection(DepartmentAndSectionId)
+        CONSTRAINT FK_Employee_EmployeeSection
+            FOREIGN KEY (EmployeeSectionId)
+            REFERENCES dbo.EmployeeSection(EmployeeSectionId)
     );
 END
 GO
@@ -106,7 +106,7 @@ GO
 
 -- 完成提示
 PRINT 'Schema created. Now run INSERT scripts in this order:';
-PRINT '  1. Insert_DepartmentSection.sql';
+PRINT '  1. Insert_EmployeeSection.sql';
 PRINT '  2. Insert_AttendanceType.sql';
 PRINT '  3. Insert_Employee.sql';
 PRINT '  4. Insert_EmployeePermission.sql';

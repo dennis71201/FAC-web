@@ -127,11 +127,11 @@ router.post('/register', identifyLimiter, async (req, res) => {
   const employeeNumber = String(req.body?.employeeNumber || '').trim();
   const employeeName = String(req.body?.employeeName || '').trim();
   const employeeEmail = String(req.body?.employeeEmail || '').trim();
-  const departmentAndSectionId = Number(req.body?.departmentAndSectionId);
+  const employeeSectionId = Number(req.body?.employeeSectionId);
 
-  if (!employeeNumber || !employeeName || !employeeEmail || !departmentAndSectionId) {
+  if (!employeeNumber || !employeeName || !employeeEmail || !employeeSectionId) {
     return res.status(400).json({
-      error: { code: 'BAD_REQUEST', message: 'employeeNumber, employeeName, employeeEmail, departmentAndSectionId are required' },
+      error: { code: 'BAD_REQUEST', message: 'employeeNumber, employeeName, employeeEmail, employeeSectionId are required' },
     });
   }
 
@@ -161,16 +161,16 @@ router.post('/register', identifyLimiter, async (req, res) => {
 
     const dsResult = await pool
       .request()
-      .input('departmentAndSectionId', departmentAndSectionId)
+      .input('employeeSectionId', employeeSectionId)
       .query(`
-        SELECT TOP 1 DepartmentAndSectionId, DepartmentName, SectionName
-        FROM DepartmentAndSection
-        WHERE DepartmentAndSectionId = @departmentAndSectionId
+        SELECT TOP 1 EmployeeSectionId, SectionName, SystemName
+        FROM EmployeeSection
+        WHERE EmployeeSectionId = @employeeSectionId
       `);
 
     if (!dsResult.recordset.length) {
       return res.status(400).json({
-        error: { code: 'BAD_REQUEST', message: 'departmentAndSectionId is invalid' },
+        error: { code: 'BAD_REQUEST', message: 'employeeSectionId is invalid' },
       });
     }
 
@@ -182,17 +182,17 @@ router.post('/register', identifyLimiter, async (req, res) => {
       .input('employeeName', employeeName)
       .input('employeeNumber', employeeNumber)
       .input('employeeEmail', employeeEmail)
-      .input('employeeDepartment', mapping.DepartmentName)
       .input('employeeSection', mapping.SectionName)
-      .input('departmentAndSectionId', mapping.DepartmentAndSectionId)
+      .input('employeeSystem', mapping.SystemName)
+      .input('employeeSectionId', mapping.EmployeeSectionId)
       .query(`
         INSERT INTO Employee (
           EmployeeName,
           EmployeeNumber,
           EmployeeEmail,
-          EmployeeDepartment,
           EmployeeSection,
-          DepartmentAndSectionId,
+          EmployeeSystem,
+          EmployeeSectionId,
           CreateTime,
           IsAlive
         )
@@ -201,9 +201,9 @@ router.post('/register', identifyLimiter, async (req, res) => {
           @employeeName,
           @employeeNumber,
           @employeeEmail,
-          @employeeDepartment,
           @employeeSection,
-          @departmentAndSectionId,
+          @employeeSystem,
+          @employeeSectionId,
           SYSDATETIME(),
           1
         )

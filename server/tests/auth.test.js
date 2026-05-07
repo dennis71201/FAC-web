@@ -69,7 +69,7 @@ describe('POST /api/auth/register', () => {
     employeeNumber: `${TEST_EMP_NUMBER_PREFIX}${nowSuffix}-A`,
     employeeName: 'Vitest Tester A',
     employeeEmail: `vitest-${nowSuffix}-a@example.com`,
-    departmentAndSectionId: 1,
+    employeeSectionId: 1,
   };
 
   it('合法註冊成功，回 201 + token', async () => {
@@ -103,17 +103,17 @@ describe('POST /api/auth/register', () => {
       employeeNumber: `${TEST_EMP_NUMBER_PREFIX}${nowSuffix}-EMAIL`,
       employeeName: 'Bad Email',
       employeeEmail: 'not-an-email',
-      departmentAndSectionId: 1,
+      employeeSectionId: 1,
     });
     expect(res.status).toBe(400);
   });
 
-  it('departmentAndSectionId 不存在回 400', async () => {
+  it('employeeSectionId 不存在回 400', async () => {
     const res = await api().post('/api/auth/register').send({
       employeeNumber: `${TEST_EMP_NUMBER_PREFIX}${nowSuffix}-DSID`,
       employeeName: 'Bad DSID',
       employeeEmail: `vitest-${nowSuffix}-bad@example.com`,
-      departmentAndSectionId: 99999,
+      employeeSectionId: 99999,
     });
     expect(res.status).toBe(400);
   });

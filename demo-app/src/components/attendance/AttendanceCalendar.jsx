@@ -49,7 +49,7 @@ export default function AttendanceCalendar({ year, month, records, onDateClick, 
   const today = dayjs();
   const calendarDays = useMemo(() => getCalendarDays(year, month), [year, month]);
 
-  // Group records by date → { dept → { type → count } }
+  // Group records by date → { section → { type → count } }
   // For each calendar day, find all records overlapping that date
   const summaryByDate = useMemo(() => {
     const map = {};
@@ -58,15 +58,15 @@ export default function AttendanceCalendar({ year, month, records, onDateClick, 
       const dayRecords = getRecordsForDate(records, date);
       if (dayRecords.length === 0) return;
 
-      const deptMap = {};
+      const sectionMap = {};
       dayRecords.forEach((r) => {
-        const dept = r.employeeDepartment || '未分類';
-        if (!dept) return;
-        if (!deptMap[dept]) deptMap[dept] = {};
+        const section = r.employeeSection || '未分類';
+        if (!section) return;
+        if (!sectionMap[section]) sectionMap[section] = {};
         const typeName = r.attendanceTypeName || '未定義';
-        deptMap[dept][typeName] = (deptMap[dept][typeName] || 0) + 1;
+        sectionMap[section][typeName] = (sectionMap[section][typeName] || 0) + 1;
       });
-      map[dateKey] = deptMap;
+      map[dateKey] = sectionMap;
     });
     return map;
   }, [records, calendarDays]);
@@ -84,7 +84,7 @@ export default function AttendanceCalendar({ year, month, records, onDateClick, 
           const isToday = date.isSame(today, 'day');
           const isWeekend = date.day() === 0 || date.day() === 6;
           const isSelected = selectedDate && date.isSame(selectedDate, 'day');
-          const daySummary = summaryByDate[dateStr]; // { dept: { type: count } }
+          const daySummary = summaryByDate[dateStr]; // { section: { type: count } }
 
           const cellClasses = [
             'att-calendar-cell',
@@ -94,10 +94,10 @@ export default function AttendanceCalendar({ year, month, records, onDateClick, 
             isSelected && !isToday && 'selected',
           ].filter(Boolean).join(' ');
 
-          // Collect department rows for this day
-          const deptRows = [];
+          // Collect section rows for this day
+          const sectionRows = [];
           if (daySummary) {
-            Object.entries(daySummary).forEach(([dept, types]) => {
+            Object.entries(daySummary).forEach(([section, types]) => {
               const badges = Object.entries(types).map(([type, count]) => ({
                 type,
                 count,
@@ -105,7 +105,7 @@ export default function AttendanceCalendar({ year, month, records, onDateClick, 
                 className: buildTypeClassName(type),
               }));
               if (badges.length > 0) {
-                deptRows.push({ dept, badges });
+                sectionRows.push({ section, badges });
               }
             });
           }
@@ -124,12 +124,12 @@ export default function AttendanceCalendar({ year, month, records, onDateClick, 
                 )}
                 {isToday && <span className="cell-today-badge">今日</span>}
               </div>
-              {deptRows.length > 0 && (
+              {sectionRows.length > 0 && (
                 <div className="cell-entries">
-                  {deptRows.map(({ dept, badges }) => (
-                    <div key={dept} className="cell-dept-row">
-                      <span className="cell-dept-label">{dept}</span>
-                      <span className="cell-dept-badges">
+                  {sectionRows.map(({ section, badges }) => (
+                    <div key={section} className="cell-section-row">
+                      <span className="cell-section-label">{section}</span>
+                      <span className="cell-section-badges">
                         {badges.map(({ type, count, label, className }) => (
                           <span key={type} className={`cell-badge ${className}`}>
                             {label} {count}

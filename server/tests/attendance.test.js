@@ -142,8 +142,8 @@ describe('GET /api/attendance/records', () => {
     if (res.body.data.length > 0) {
       const sample = res.body.data[0];
       expect(sample).toHaveProperty('EmployeeName');
-      expect(sample).toHaveProperty('EmployeeDepartment');
       expect(sample).toHaveProperty('EmployeeSection');
+      expect(sample).toHaveProperty('EmployeeSystem');
       expect(sample).toHaveProperty('AttendanceTypeName');
       expect(sample).toHaveProperty('AttendanceTypeColor');
     }

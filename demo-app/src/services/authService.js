@@ -10,12 +10,12 @@ export async function register(payload) {
   return response.data;
 }
 
-export async function getDepartmentSections() {
-  const response = await apiClient.get('/api/departments-sections');
+export async function getEmployeeSections() {
+  const response = await apiClient.get('/api/employee-sections');
   return (response.data?.data || []).map((item) => ({
-    id: item.DepartmentAndSectionId,
-    departmentName: item.DepartmentName,
+    id: item.EmployeeSectionId,
     sectionName: item.SectionName,
-    label: `${item.DepartmentName} / ${item.SectionName}`,
+    systemName: item.SystemName,
+    label: `${item.SectionName} / ${item.SystemName}`,
   }));
 }

@@ -40,14 +40,14 @@ describe('GET /api/employees', () => {
     expect(numbers).not.toContain(TEST_USERS.inactive.employeeNumber);
   });
 
-  it('每筆包含必要欄位（EmployeeId/Name/Number/Department/Section）', async () => {
+  it('每筆包含必要欄位（EmployeeId/Name/Number/EmployeeSection/EmployeeSystem）', async () => {
     const res = await api().get('/api/employees').set(authHeader(adminToken));
     const sample = res.body.data[0];
     expect(sample).toHaveProperty('EmployeeId');
     expect(sample).toHaveProperty('EmployeeName');
     expect(sample).toHaveProperty('EmployeeNumber');
-    expect(sample).toHaveProperty('EmployeeDepartment');
     expect(sample).toHaveProperty('EmployeeSection');
+    expect(sample).toHaveProperty('EmployeeSystem');
   });
 
   it('依 EmployeeNumber 排序', async () => {

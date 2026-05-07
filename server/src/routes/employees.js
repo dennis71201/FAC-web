@@ -12,8 +12,8 @@ router.get('/', verifyToken, async (req, res) => {
         EmployeeId,
         EmployeeName,
         EmployeeNumber,
-        EmployeeDepartment,
-        EmployeeSection
+        EmployeeSection,
+        EmployeeSystem
       FROM Employee
       WHERE IsAlive = 1
       ORDER BY EmployeeNumber
