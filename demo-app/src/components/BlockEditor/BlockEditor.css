@@ -1,0 +1,236 @@
+/* Block editor grid container */
+.block-editor {
+  position: relative;
+}
+
+.block-editor-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  align-items: center;
+}
+
+.block-editor-toolbar-label {
+  font-weight: 600;
+  color: #475569;
+  margin-right: 8px;
+}
+
+/* Grid layout overrides */
+.block-editor .react-grid-item {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.block-editor.editable .react-grid-item {
+  border: 1px dashed #94a3b8;
+}
+
+.block-editor.editable .react-grid-item:hover {
+  border-color: #3b82f6;
+}
+
+.block-editor .react-grid-item.react-grid-placeholder {
+  background: rgba(59, 130, 246, 0.15);
+  border: 2px dashed #3b82f6;
+}
+
+/* Block wrapper */
+.block-item {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.block-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 8px;
+  background: #f1f5f9;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 12px;
+  color: #64748b;
+  cursor: move;
+}
+
+.block-item-header.readonly {
+  display: none;
+}
+
+.block-item-body {
+  flex: 1;
+  padding: 12px;
+  overflow: auto;
+}
+
+/* Text block */
+.text-block-view {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #1e293b;
+}
+
+.text-block-view h1,
+.text-block-view h2,
+.text-block-view h3 {
+  margin: 8px 0;
+}
+
+.text-block-view ul,
+.text-block-view ol {
+  padding-left: 20px;
+}
+
+.text-block-view a {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.text-block-edit .text-block-toolbar {
+  margin-bottom: 8px;
+}
+
+.text-block-edit .text-block-content {
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  padding: 8px;
+  min-height: 80px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.text-block-edit .ProseMirror {
+  outline: none;
+  min-height: 60px;
+}
+
+.text-block-edit .ProseMirror p {
+  margin: 4px 0;
+}
+
+/* Image block */
+.image-block-view,
+.image-block-edit {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.image-block-view img,
+.image-block-preview {
+  width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  flex: 1;
+  min-height: 0;
+}
+
+.image-block-view figcaption {
+  font-size: 12px;
+  color: #64748b;
+  text-align: center;
+  padding: 4px 0;
+}
+
+.image-block-empty,
+.video-block-empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  border-radius: 4px;
+  border: 1px dashed #e2e8f0;
+}
+
+.image-block-controls,
+.video-block-controls {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Video block */
+.video-block-view,
+.video-block-preview {
+  width: 100%;
+  max-height: 100%;
+  flex: 1;
+  min-height: 0;
+  background: #000;
+  border-radius: 4px;
+}
+
+/* Link block */
+.link-block-view {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+  padding: 12px;
+  height: 100%;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+
+.link-block-view:hover {
+  background: #f1f5f9;
+}
+
+.link-block-icon {
+  font-size: 24px;
+  color: #2563eb;
+  flex-shrink: 0;
+}
+
+.link-block-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.link-block-label {
+  font-weight: 600;
+  color: #1e293b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.link-block-description {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.link-block-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 4px;
+}
+
+/* Drag handle indicator */
+.block-editor.editable .react-grid-item > .react-resizable-handle {
+  background-image: none;
+}
+
+.block-editor.editable .react-grid-item > .react-resizable-handle::after {
+  border-color: #94a3b8;
+}
