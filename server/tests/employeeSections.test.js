@@ -12,10 +12,10 @@ describe('GET /api/employee-sections', () => {
     expect(res.status).toBe(200);
   });
 
-  it('回傳 9 筆課別對照', async () => {
+  it('回傳 13 筆課別對照', async () => {
     const res = await api().get('/api/employee-sections');
     expect(Array.isArray(res.body.data)).toBe(true);
-    expect(res.body.data.length).toBe(9);
+    expect(res.body.data.length).toBe(13);
   });
 
   it('包含必要欄位 EmployeeSectionId / SectionName / SystemName', async () => {
