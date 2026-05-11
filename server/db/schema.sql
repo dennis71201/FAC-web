@@ -81,7 +81,31 @@ BEGIN
 END
 GO
 
--- 6. AttendanceRecord ------------------------------------------------------
+-- 6. HomePageLayout --------------------------------------------------------
+-- 全公司共用一筆首頁版面，整份以 JSON 存於 LayoutJson 欄位
+-- UpdatedBy 為最後一次修改的管理者 EmployeeId
+IF OBJECT_ID('dbo.HomePageLayout', 'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.HomePageLayout (
+        HomePageLayoutId  INT IDENTITY(1,1)  NOT NULL,
+        LayoutJson        NVARCHAR(MAX)      NOT NULL,
+        UpdatedBy         INT                NULL,
+        UpdatedAt         DATETIME2(0)       NOT NULL,
+        CONSTRAINT PK_HomePageLayout PRIMARY KEY (HomePageLayoutId),
+        CONSTRAINT FK_HomePageLayout_Employee
+            FOREIGN KEY (UpdatedBy)
+            REFERENCES dbo.Employee(EmployeeId),
+        CONSTRAINT CK_HomePageLayout_LayoutJson
+            CHECK (ISJSON(LayoutJson) = 1)
+    );
+
+    -- 預設插入一筆空版面，避免第一次 GET 拿到空值
+    INSERT INTO dbo.HomePageLayout (LayoutJson, UpdatedBy, UpdatedAt)
+    VALUES (N'{"blocks":[],"layout":[]}', NULL, SYSDATETIME());
+END
+GO
+
+-- 7. AttendanceRecord ------------------------------------------------------
 IF OBJECT_ID('dbo.AttendanceRecord', 'U') IS NULL
 BEGIN
     CREATE TABLE dbo.AttendanceRecord (
