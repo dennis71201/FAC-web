@@ -49,7 +49,7 @@ export default function Login() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/attendance', { replace: true });
+      navigate('/home', { replace: true });
     }
   }, [isAuthenticated, navigate]);
 
@@ -64,7 +64,7 @@ export default function Login() {
       try {
         const success = await tryOidcLogin();
         if (success) {
-          navigate('/attendance', { replace: true });
+          navigate('/home', { replace: true });
           return;
         }
       } finally {
@@ -81,7 +81,7 @@ export default function Login() {
 
     try {
       await identifyLogin(values.employeeNumber.trim());
-      navigate('/attendance', { replace: true });
+      navigate('/home', { replace: true });
     } catch (error) {
       setFeedback(mapIdentifyError(error));
     } finally {

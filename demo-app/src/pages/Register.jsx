@@ -66,7 +66,7 @@ export default function Register() {
         employeeEmail: values.employeeEmail.trim(),
         employeeSectionId: values.employeeSectionId,
       });
-      navigate('/attendance', { replace: true });
+      navigate('/home', { replace: true });
     } catch (error) {
       setSubmitError(mapRegisterError(error));
     } finally {
