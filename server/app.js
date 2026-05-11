@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import pinoHttp from 'pino-http';
+import path from 'path';
 import env from './src/config/env.js';
 import { debugAuthStatus } from './src/middleware/auth.js';
 import healthRouter from './src/routes/health.js';
@@ -10,6 +11,8 @@ import authRouter from './src/routes/auth.js';
 import employeeSectionsRouter from './src/routes/employeeSections.js';
 import employeesRouter from './src/routes/employees.js';
 import attendanceRouter from './src/routes/attendance.js';
+import homepageRouter from './src/routes/homepage.js';
+import uploadsRouter from './src/routes/uploads.js';
 
 const app = express();
 
@@ -52,6 +55,19 @@ app.use('/api/auth', authRouter);
 app.use('/api', employeeSectionsRouter);
 app.use('/api/employees', employeesRouter);
 app.use('/api/attendance', attendanceRouter);
+app.use('/api/homepage', homepageRouter);
+app.use('/api/uploads', uploadsRouter);
+
+// 靜態檔服務：上傳的圖片/影片（正式環境由 IIS Virtual Directory 提供）
+const uploadsDir = path.resolve(process.cwd(), 'uploads');
+app.use(
+  '/uploads',
+  (req, res, next) => {
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+    next();
+  },
+  express.static(uploadsDir)
+);
 
 // 404 handler
 app.use((req, res) => {
