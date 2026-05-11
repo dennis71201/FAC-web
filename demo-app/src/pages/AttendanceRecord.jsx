@@ -17,8 +17,8 @@ import '../styles/attendance.css';
 export default function AttendanceRecord() {
   const { user } = useAuth();
   const [currentMonth, setCurrentMonth] = useState(dayjs());
-  const [selectedDept, setSelectedDept] = useState(null);
   const [selectedSection, setSelectedSection] = useState(null);
+  const [selectedSystem, setSelectedSystem] = useState(null);
   const [selectedDate, setSelectedDate] = useState(dayjs());
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -78,37 +78,37 @@ export default function AttendanceRecord() {
     };
   }, [user, loadAttendanceTypes, loadAttendanceRecords, attendanceTypes.length]);
 
-  const departmentOptions = useMemo(() => {
-    const deptSet = new Set(records.map((record) => record.employeeDepartment).filter(Boolean));
-    return Array.from(deptSet).sort().map((dept) => ({ label: dept, value: dept }));
+  const sectionOptions = useMemo(() => {
+    const sectionSet = new Set(records.map((record) => record.employeeSection).filter(Boolean));
+    return Array.from(sectionSet).sort().map((section) => ({ label: section, value: section }));
   }, [records]);
 
-  const sectionOptions = useMemo(() => {
-    if (!selectedDept) return [];
+  const systemOptions = useMemo(() => {
+    if (!selectedSection) return [];
 
-    const sectionSet = new Set(
+    const systemSet = new Set(
       records
-        .filter((record) => record.employeeDepartment === selectedDept)
-        .map((record) => record.employeeSection)
+        .filter((record) => record.employeeSection === selectedSection)
+        .map((record) => record.employeeSystem)
         .filter(Boolean)
     );
 
-    return Array.from(sectionSet).sort().map((section) => ({ label: section, value: section }));
-  }, [selectedDept, records]);
+    return Array.from(systemSet).sort().map((system) => ({ label: system, value: system }));
+  }, [selectedSection, records]);
 
   const filteredRecords = useMemo(() => {
     let list = records;
-
-    if (selectedDept) {
-      list = list.filter((record) => record.employeeDepartment === selectedDept);
-    }
 
     if (selectedSection) {
       list = list.filter((record) => record.employeeSection === selectedSection);
     }
 
+    if (selectedSystem) {
+      list = list.filter((record) => record.employeeSystem === selectedSystem);
+    }
+
     return list;
-  }, [selectedDept, selectedSection, records]);
+  }, [selectedSection, selectedSystem, records]);
 
   const legendItems = useMemo(
     () => attendanceTypes.map((type) => ({
@@ -155,9 +155,9 @@ export default function AttendanceRecord() {
     }
   };
 
-  const handleDeptChange = (value) => {
-    setSelectedDept(value || null);
-    setSelectedSection(null);
+  const handleSectionChange = (value) => {
+    setSelectedSection(value || null);
+    setSelectedSystem(null);
   };
 
   const handleDateClick = (date) => {
@@ -197,20 +197,20 @@ export default function AttendanceRecord() {
             style={{ width: 160 }}
           />
           <Select
-            placeholder="部門"
-            allowClear
-            value={selectedDept || undefined}
-            onChange={handleDeptChange}
-            options={departmentOptions}
-            style={{ width: 120 }}
-          />
-          <Select
             placeholder="課別"
             allowClear
             value={selectedSection || undefined}
-            onChange={(v) => setSelectedSection(v || null)}
+            onChange={handleSectionChange}
             options={sectionOptions}
-            disabled={!selectedDept}
+            style={{ width: 120 }}
+          />
+          <Select
+            placeholder="系統"
+            allowClear
+            value={selectedSystem || undefined}
+            onChange={(v) => setSelectedSystem(v || null)}
+            options={systemOptions}
+            disabled={!selectedSection}
             style={{ width: 120 }}
           />
         </div>

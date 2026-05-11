@@ -43,12 +43,12 @@ export default function AttendanceSidebar({ selectedDate, records, onDelete }) {
     };
   }, [dayRecords]);
 
-  // Group records by department-section → employees → records[]
+  // Group records by section-system → employees → records[]
   const detailGroups = useMemo(() => {
     const groups = {};
 
     dayRecords.forEach((r) => {
-      const groupKey = `${r.employeeDepartment || '未分類'} - ${r.employeeSection || '未分類'}`;
+      const groupKey = `${r.employeeSection || '未分類'} - ${r.employeeSystem || '未分類'}`;
       if (!groups[groupKey]) groups[groupKey] = {};
 
       if (!groups[groupKey][r.employeeId]) {

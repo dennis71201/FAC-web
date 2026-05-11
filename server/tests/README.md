@@ -4,7 +4,7 @@
 
 ## 前置需求
 
-1. SQL Server 已啟動且 `MTB_FAC_OPS_WEB` 含初始測試資料（FAC-001 ~ FAC-014、AttendanceType 5 種、DepartmentAndSection 9 種）
+1. SQL Server 已啟動且 `MTB_FAC_OPS_WEB` 含初始測試資料（FAC-001 ~ FAC-014、AttendanceType 5 種、EmployeeSection 9 種）
 2. `.env` 設定完成（與 `npm run dev` 共用）
 3. `npm install` 已執行（會裝 vitest、supertest）
 
@@ -21,7 +21,7 @@ npm run test:watch  # watch 模式
 | 檔案 | 測試對象 |
 |------|---------|
 | `health.test.js` | `/api/health`、`/health/live`、`/health/ready` |
-| `departmentsSections.test.js` | `/api/departments-sections` |
+| `employeeSections.test.js` | `/api/employee-sections` |
 | `auth.test.js` | `/api/auth/identify`、`/api/auth/register` |
 | `employees.test.js` | `/api/employees` |
 | `attendance.test.js` | `/api/attendance/types`、`/records` 全 CRUD（含權限矩陣、跨日、軟刪除） |

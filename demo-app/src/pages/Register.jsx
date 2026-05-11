@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Alert, Button, Card, Form, Input, Select, Space, Typography } from 'antd';
 import { MailOutlined, UserOutlined, IdcardOutlined, FormOutlined } from '@ant-design/icons';
 import { useAuth } from '../context/AuthContext';
-import { getDepartmentSections } from '../services/authService';
+import { getEmployeeSections } from '../services/authService';
 import '../styles/auth.css';
 
 const { Title, Paragraph, Text } = Typography;
@@ -31,17 +31,17 @@ export default function Register() {
   const [loadingOptions, setLoadingOptions] = useState(true);
   const [optionError, setOptionError] = useState('');
   const [submitError, setSubmitError] = useState('');
-  const [departmentSections, setDepartmentSections] = useState([]);
+  const [employeeSections, setEmployeeSections] = useState([]);
 
   useEffect(() => {
     const fetchOptions = async () => {
       setLoadingOptions(true);
       setOptionError('');
       try {
-        const options = await getDepartmentSections();
-        setDepartmentSections(options);
+        const options = await getEmployeeSections();
+        setEmployeeSections(options);
       } catch (error) {
-        setOptionError(error.message || '無法載入部門課別資料，請稍後重試。');
+        setOptionError(error.message || '無法載入課別系統資料，請稍後重試。');
       } finally {
         setLoadingOptions(false);
       }
@@ -51,8 +51,8 @@ export default function Register() {
   }, []);
 
   const sectionOptions = useMemo(
-    () => departmentSections.map((item) => ({ label: item.label, value: item.id })),
-    [departmentSections]
+    () => employeeSections.map((item) => ({ label: item.label, value: item.id })),
+    [employeeSections]
   );
 
   const handleSubmit = async (values) => {
@@ -64,7 +64,7 @@ export default function Register() {
         employeeNumber: values.employeeNumber.trim(),
         employeeName: values.employeeName.trim(),
         employeeEmail: values.employeeEmail.trim(),
-        departmentAndSectionId: values.departmentAndSectionId,
+        employeeSectionId: values.employeeSectionId,
       });
       navigate('/attendance', { replace: true });
     } catch (error) {
@@ -81,7 +81,7 @@ export default function Register() {
           <div>
             <Title level={3} className="auth-title">首次註冊</Title>
             <Paragraph className="auth-subtitle">
-              請填寫員工資料，系統將依部門課別代碼自動建立權限。
+              請填寫員工資料，系統將依課別系統代碼自動建立權限。
             </Paragraph>
           </div>
 
@@ -117,12 +117,12 @@ export default function Register() {
             </Form.Item>
 
             <Form.Item
-              label="部門 / 課別"
-              name="departmentAndSectionId"
-              rules={[{ required: true, message: '請選擇部門課別' }]}
+              label="課別 / 系統"
+              name="employeeSectionId"
+              rules={[{ required: true, message: '請選擇課別系統' }]}
             >
               <Select
-                placeholder="請選擇部門與課別"
+                placeholder="請選擇課別與系統"
                 options={sectionOptions}
                 loading={loadingOptions}
                 size="large"
