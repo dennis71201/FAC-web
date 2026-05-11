@@ -30,7 +30,7 @@ export default function Home() {
       })
       .catch((err) => {
         if (cancelled) return;
-        message.error(err?.message || '載入首頁失敗');
+        message.error(err?.message || '載入 homepage 失敗');
       })
       .finally(() => {
         if (cancelled) return;
@@ -57,7 +57,7 @@ export default function Home() {
       await saveHomePageLayout(draftLayout);
       setLayout(draftLayout);
       setEditing(false);
-      message.success('首頁已更新');
+      message.success('homepage 已更新');
     } catch (err) {
       message.error(err?.message || '儲存失敗');
     } finally {
@@ -84,7 +84,7 @@ export default function Home() {
         }}
       >
         <Title level={3} style={{ margin: 0 }}>
-          首頁
+          homepage
         </Title>
         {isAdmin && (
           <Space>
@@ -104,7 +104,7 @@ export default function Home() {
               </>
             ) : (
               <Button icon={<EditOutlined />} onClick={handleEnterEdit}>
-                編輯首頁
+                編輯 homepage
               </Button>
             )}
           </Space>

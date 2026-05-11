@@ -149,7 +149,7 @@ export default function BlockEditor({ value, onChange, readOnly }) {
 
       {blocks.length === 0 && (
         <div style={{ textAlign: 'center', padding: 48, color: '#94a3b8' }}>
-          {readOnly ? '首頁尚未配置內容' : '尚無區塊，請從上方工具列新增'}
+          {readOnly ? '尚未配置內容' : '尚無區塊，請從上方工具列新增'}
         </div>
       )}
     </div>

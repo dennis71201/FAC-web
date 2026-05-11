@@ -58,7 +58,7 @@ export default function MainLayout() {
         <Header className="app-header">
           <Breadcrumb
             items={[
-              { title: '首頁' },
+              { title: 'homepage' },
               { title: breadcrumbMap[currentPath] || '' },
             ]}
           />

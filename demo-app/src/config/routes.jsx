@@ -35,7 +35,7 @@ import {
 const routes = [
   {
     path: 'home',
-    label: '首頁',
+    label: 'homepage',
     icon: HomeOutlined,
     component: Home,
   },
