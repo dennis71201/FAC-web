@@ -3,11 +3,11 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Layout, Menu, Avatar, Tag, Space, Typography, Breadcrumb, Button } from 'antd';
 import {
   UserOutlined,
-  AppstoreOutlined,
   LogoutOutlined,
 } from '@ant-design/icons';
 import { buildMenuItems, breadcrumbMap } from '../config/routes';
 import { useAuth } from '../context/AuthContext';
+import logoImage from '../assets/logo.jpg';
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -41,7 +41,7 @@ export default function MainLayout() {
         theme="dark"
       >
         <div className={`sider-logo ${collapsed ? 'collapsed' : ''}`}>
-          <AppstoreOutlined className="logo-icon" />
+          <img src={logoImage} className="logo-image" alt="廠務管理平台 Logo" />
           {!collapsed && <span className="logo-text">廠務管理平台</span>}
         </div>
         <Menu

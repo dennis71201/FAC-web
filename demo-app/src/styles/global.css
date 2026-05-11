@@ -20,6 +20,19 @@
   margin-right: 8px;
 }
 
+.sider-logo .logo-image {
+  height: 32px;
+  width: 32px;
+  object-fit: contain;
+  margin-right: 8px;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.sider-logo.collapsed .logo-image {
+  margin-right: 0;
+}
+
 /* Header */
 .app-header {
   background: #fff !important;
