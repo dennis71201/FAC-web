@@ -1,3 +1,4 @@
+import Home from '../pages/Home';
 import EquipmentTracking from '../pages/EquipmentTracking';
 import AlarmMonitor from '../pages/AlarmMonitor';
 import AttendanceRecord from '../pages/AttendanceRecord';
@@ -5,6 +6,7 @@ import Passdown from '../pages/Passdown';
 import EmployeeManagement from '../pages/EmployeeManagement';
 
 import {
+  HomeOutlined,
   ToolOutlined,
   AlertOutlined,
   CalendarOutlined,
@@ -31,6 +33,12 @@ import {
  *   groupIcon  — (optional) Icon for the submenu group
  */
 const routes = [
+  {
+    path: 'home',
+    label: '首頁',
+    icon: HomeOutlined,
+    component: Home,
+  },
   {
     path: 'equipment',
     label: 'Equipment Tracking',
