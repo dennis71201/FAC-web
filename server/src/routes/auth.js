@@ -40,6 +40,7 @@ async function buildAuthResponse(employee, role, permissions) {
   const token = await new SignJWT({
     employeeId: employee.EmployeeId,
     employeeNumber: employee.EmployeeNumber,
+    employeeSectionId: employee.EmployeeSectionId,
     role,
     permissions,
     name: employee.EmployeeName,
@@ -54,6 +55,9 @@ async function buildAuthResponse(employee, role, permissions) {
     user: {
       employeeId: employee.EmployeeId,
       employeeNumber: employee.EmployeeNumber,
+      employeeSectionId: employee.EmployeeSectionId,
+      section: employee.EmployeeSection,
+      system: employee.EmployeeSystem,
       name: employee.EmployeeName,
       role,
       permissions,
@@ -79,6 +83,9 @@ router.post('/identify', identifyLimiter, async (req, res) => {
           EmployeeId,
           EmployeeName,
           EmployeeNumber,
+          EmployeeSectionId,
+          EmployeeSection,
+          EmployeeSystem,
           IsAlive
         FROM Employee
         WHERE EmployeeNumber = @employeeNumber
@@ -196,7 +203,13 @@ router.post('/register', identifyLimiter, async (req, res) => {
           CreateTime,
           IsAlive
         )
-        OUTPUT INSERTED.EmployeeId, INSERTED.EmployeeName, INSERTED.EmployeeNumber
+        OUTPUT
+          INSERTED.EmployeeId,
+          INSERTED.EmployeeName,
+          INSERTED.EmployeeNumber,
+          INSERTED.EmployeeSectionId,
+          INSERTED.EmployeeSection,
+          INSERTED.EmployeeSystem
         VALUES (
           @employeeName,
           @employeeNumber,

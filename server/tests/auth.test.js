@@ -30,6 +30,9 @@ describe('POST /api/auth/identify', () => {
       role: 'Administrator',
     });
     expect(res.body.user.permissions).toBeTypeOf('object');
+    expect(res.body.user.employeeSectionId).toBeTypeOf('number');
+    expect(res.body.user.section).toBeTypeOf('string');
+    expect(res.body.user.system).toBeTypeOf('string');
   });
 
   it('General User 登入成功且 role 為 General User', async () => {
@@ -82,6 +85,9 @@ describe('POST /api/auth/register', () => {
       role: 'General User',
     });
     expect(res.body.user.permissions['Attendance Record']).toBe(true);
+    expect(res.body.user.employeeSectionId).toBe(validPayload.employeeSectionId);
+    expect(res.body.user.section).toBeTypeOf('string');
+    expect(res.body.user.system).toBeTypeOf('string');
   });
 
   it('員工編號重複回 409 EMPLOYEE_NUMBER_CONFLICT', async () => {

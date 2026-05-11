@@ -45,6 +45,7 @@ export async function verifyToken(req, res, next) {
     // Attach user context to request
     req.user = {
       employeeId: result.payload.employeeId,
+      employeeSectionId: result.payload.employeeSectionId,
       role: result.payload.role,
       permissions: result.payload.permissions || result.payload.permission || {},
       isDev: false,
