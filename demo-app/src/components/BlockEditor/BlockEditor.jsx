@@ -103,9 +103,8 @@ export default function BlockEditor({ value, onChange, readOnly }) {
             cols={12}
             rowHeight={40}
             margin={[12, 12]}
-            isDraggable={!readOnly}
-            isResizable={!readOnly}
-            draggableHandle=".block-item-header"
+            dragConfig={{ enabled: !readOnly, handle: '.block-item-header' }}
+            resizeConfig={{ enabled: !readOnly, handles: ['se', 'e', 's'] }}
             onLayoutChange={handleLayoutChange}
             useCSSTransforms
           >

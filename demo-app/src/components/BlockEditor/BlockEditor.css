@@ -226,11 +226,25 @@
   padding: 4px;
 }
 
-/* Drag handle indicator */
+/* Resize handle: 在編輯模式時恆顯，避免不知道哪裡可拉 */
 .block-editor.editable .react-grid-item > .react-resizable-handle {
+  opacity: 1;
+  z-index: 5;
   background-image: none;
 }
 
 .block-editor.editable .react-grid-item > .react-resizable-handle::after {
-  border-color: #94a3b8;
+  border-color: #3b82f6;
+  border-right-width: 2px;
+  border-bottom-width: 2px;
+  width: 8px;
+  height: 8px;
+}
+
+.block-editor.editable .react-grid-item > .react-resizable-handle-e {
+  cursor: e-resize;
+}
+
+.block-editor.editable .react-grid-item > .react-resizable-handle-s {
+  cursor: s-resize;
 }
