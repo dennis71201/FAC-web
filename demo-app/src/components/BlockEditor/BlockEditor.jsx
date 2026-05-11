@@ -2,7 +2,7 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import './BlockEditor.css';
 
-import GridLayout, { WidthProvider } from 'react-grid-layout';
+import GridLayout, { useContainerWidth } from 'react-grid-layout';
 import { Button, Popconfirm } from 'antd';
 import {
   FontSizeOutlined,
@@ -24,8 +24,6 @@ import {
   createDefaultLayoutItem,
 } from './utils';
 
-const SizedGridLayout = WidthProvider(GridLayout);
-
 const BLOCK_RENDERERS = {
   [BLOCK_TYPES.TEXT]: TextBlock,
   [BLOCK_TYPES.IMAGE]: ImageBlock,
@@ -41,6 +39,7 @@ const BLOCK_LABELS = {
 };
 
 export default function BlockEditor({ value, onChange, readOnly }) {
+  const { width, containerRef, mounted } = useContainerWidth();
   const blocks = value?.blocks || [];
   const layout = value?.layout || [];
 
@@ -96,53 +95,58 @@ export default function BlockEditor({ value, onChange, readOnly }) {
         </div>
       )}
 
-      <SizedGridLayout
-        layout={layout}
-        cols={12}
-        rowHeight={40}
-        margin={[12, 12]}
-        isDraggable={!readOnly}
-        isResizable={!readOnly}
-        draggableHandle=".block-item-header"
-        onLayoutChange={handleLayoutChange}
-        useCSSTransforms
-      >
-        {blocks.map((block) => {
-          const Renderer = BLOCK_RENDERERS[block.type];
-          if (!Renderer) return null;
-          return (
-            <div key={block.id} className="block-item">
-              <div className={`block-item-header ${readOnly ? 'readonly' : ''}`}>
-                <span>
-                  <HolderOutlined /> {BLOCK_LABELS[block.type]}
-                </span>
-                <span onMouseDown={(e) => e.stopPropagation()}>
-                  <Popconfirm
-                    title="刪除此區塊？"
-                    onConfirm={() => removeBlock(block.id)}
-                    okText="刪除"
-                    cancelText="取消"
-                  >
-                    <Button
-                      size="small"
-                      type="text"
-                      icon={<DeleteOutlined />}
-                      danger
+      <div ref={containerRef}>
+        {mounted && (
+          <GridLayout
+            width={width}
+            layout={layout}
+            cols={12}
+            rowHeight={40}
+            margin={[12, 12]}
+            isDraggable={!readOnly}
+            isResizable={!readOnly}
+            draggableHandle=".block-item-header"
+            onLayoutChange={handleLayoutChange}
+            useCSSTransforms
+          >
+            {blocks.map((block) => {
+              const Renderer = BLOCK_RENDERERS[block.type];
+              if (!Renderer) return null;
+              return (
+                <div key={block.id} className="block-item">
+                  <div className={`block-item-header ${readOnly ? 'readonly' : ''}`}>
+                    <span>
+                      <HolderOutlined /> {BLOCK_LABELS[block.type]}
+                    </span>
+                    <span onMouseDown={(e) => e.stopPropagation()}>
+                      <Popconfirm
+                        title="刪除此區塊？"
+                        onConfirm={() => removeBlock(block.id)}
+                        okText="刪除"
+                        cancelText="取消"
+                      >
+                        <Button
+                          size="small"
+                          type="text"
+                          icon={<DeleteOutlined />}
+                          danger
+                        />
+                      </Popconfirm>
+                    </span>
+                  </div>
+                  <div className="block-item-body">
+                    <Renderer
+                      data={block.data}
+                      readOnly={readOnly}
+                      onChange={(newData) => updateBlockData(block.id, newData)}
                     />
-                  </Popconfirm>
-                </span>
-              </div>
-              <div className="block-item-body">
-                <Renderer
-                  data={block.data}
-                  readOnly={readOnly}
-                  onChange={(newData) => updateBlockData(block.id, newData)}
-                />
-              </div>
-            </div>
-          );
-        })}
-      </SizedGridLayout>
+                  </div>
+                </div>
+              );
+            })}
+          </GridLayout>
+        )}
+      </div>
 
       {blocks.length === 0 && (
         <div style={{ textAlign: 'center', padding: 48, color: '#94a3b8' }}>
