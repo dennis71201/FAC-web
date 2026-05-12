@@ -26,10 +26,11 @@ if (import.meta.env.DEV) {
   });
 }
 
+// Micron 品牌色系
 const theme = {
   token: {
-    colorPrimary: '#64748B',
-    colorInfo: '#64748B',
+    colorPrimary: '#006FB9',
+    colorInfo: '#006FB9',
     colorSuccess: '#22c55e',
     colorWarning: '#F97316',
     colorError: '#ef4444',
