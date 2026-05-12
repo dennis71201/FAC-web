@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Button, Space, Spin, message, Typography } from 'antd';
+import { Button, Space, Spin, message } from 'antd';
 import { EditOutlined, SaveOutlined, CloseOutlined } from '@ant-design/icons';
 import BlockEditor from '../components/BlockEditor';
 import { useAuth } from '../context/AuthContext';
 import { getHomePageLayout, saveHomePageLayout } from '../services/homepageService';
 
-const { Title } = Typography;
 const EMPTY_LAYOUT = { blocks: [], layout: [] };
 
 export default function Home() {
@@ -78,14 +77,11 @@ export default function Home() {
       <div
         style={{
           display: 'flex',
-          justifyContent: 'space-between',
+          justifyContent: 'flex-end',
           alignItems: 'center',
           marginBottom: 16,
         }}
       >
-        <Title level={3} style={{ margin: 0 }}>
-          homepage
-        </Title>
         {isAdmin && (
           <Space>
             {editing ? (
