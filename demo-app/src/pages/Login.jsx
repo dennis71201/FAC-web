@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Alert, Button, Card, Form, Input, Space, Typography } from 'antd';
 import { UserOutlined, LoginOutlined } from '@ant-design/icons';
 import { useAuth } from '../context/AuthContext';
+import logoImage from '../assets/logo.jpg';
 import '../styles/auth.css';
 
 const { Title, Paragraph, Text } = Typography;
@@ -93,8 +94,13 @@ export default function Login() {
     <div className="auth-page">
       <Card className="auth-card" variant="outlined">
         <Space orientation="vertical" size={20} style={{ width: '100%' }}>
+          <div className="auth-brand-header">
+            <img src={logoImage} className="auth-brand-logo" alt="Micron Facilities" />
+            <Title level={4} className="auth-brand-name">Micron</Title>
+            <div className="auth-brand-tagline">Facilities Management Platform</div>
+            <div className="auth-brand-locale">廠務管理平台</div>
+          </div>
           <div>
-            <Title level={3} className="auth-title">廠務管理平台</Title>
             <Paragraph className="auth-subtitle">
               先嘗試 OIDC 驗證，若失敗可使用員工編號登入。
             </Paragraph>
