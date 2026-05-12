@@ -15,7 +15,7 @@ export function sanitizeHtml(html) {
       'h1', 'h2', 'h3', 'h4', 'ul', 'ol', 'li', 'blockquote',
       'code', 'pre',
     ],
-    ALLOWED_ATTR: ['href', 'target', 'rel', 'class'],
+    ALLOWED_ATTR: ['href', 'target', 'rel', 'class', 'style'],
   });
 }
 

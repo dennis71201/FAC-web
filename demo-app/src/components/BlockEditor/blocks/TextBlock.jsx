@@ -1,7 +1,8 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
-import { Space, Button, Tooltip } from 'antd';
+import TextAlign from '@tiptap/extension-text-align';
+import { Space, Button, Tooltip, Select } from 'antd';
 import {
   BoldOutlined,
   ItalicOutlined,
@@ -10,14 +11,49 @@ import {
   OrderedListOutlined,
   UnorderedListOutlined,
   LinkOutlined,
+  AlignLeftOutlined,
+  AlignCenterOutlined,
+  AlignRightOutlined,
 } from '@ant-design/icons';
 import { sanitizeHtml } from '../utils';
+
+const HEADING_OPTIONS = [
+  { value: 'p', label: '段落' },
+  { value: 'h1', label: '標題 1' },
+  { value: 'h2', label: '標題 2' },
+  { value: 'h3', label: '標題 3' },
+  { value: 'h4', label: '標題 4' },
+];
+
+function getCurrentHeading(editor) {
+  if (editor.isActive('heading', { level: 1 })) return 'h1';
+  if (editor.isActive('heading', { level: 2 })) return 'h2';
+  if (editor.isActive('heading', { level: 3 })) return 'h3';
+  if (editor.isActive('heading', { level: 4 })) return 'h4';
+  return 'p';
+}
+
+function applyHeading(editor, value) {
+  if (value === 'p') {
+    editor.chain().focus().setParagraph().run();
+  } else {
+    const level = parseInt(value.slice(1), 10);
+    editor.chain().focus().toggleHeading({ level }).run();
+  }
+}
 
 export default function TextBlock({ data, readOnly, onChange }) {
   const editor = useEditor({
     extensions: [
       StarterKit,
-      Link.configure({ openOnClick: true, HTMLAttributes: { rel: 'noopener noreferrer', target: '_blank' } }),
+      Link.configure({
+        openOnClick: true,
+        HTMLAttributes: { rel: 'noopener noreferrer', target: '_blank' },
+      }),
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+        alignments: ['left', 'center', 'right'],
+      }),
     ],
     content: data?.html || '',
     editable: !readOnly,
@@ -51,6 +87,13 @@ export default function TextBlock({ data, readOnly, onChange }) {
   return (
     <div className="text-block-edit">
       <Space size={4} className="text-block-toolbar" wrap>
+        <Select
+          size="small"
+          style={{ width: 90 }}
+          value={getCurrentHeading(editor)}
+          onChange={(val) => applyHeading(editor, val)}
+          options={HEADING_OPTIONS}
+        />
         <Tooltip title="粗體">
           <Button
             size="small"
@@ -83,23 +126,29 @@ export default function TextBlock({ data, readOnly, onChange }) {
             onClick={() => editor.chain().focus().toggleStrike().run()}
           />
         </Tooltip>
-        <Tooltip title="標題 H2">
+        <Tooltip title="靠左">
           <Button
             size="small"
-            type={editor.isActive('heading', { level: 2 }) ? 'primary' : 'default'}
-            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          >
-            H2
-          </Button>
+            type={editor.isActive({ textAlign: 'left' }) ? 'primary' : 'default'}
+            icon={<AlignLeftOutlined />}
+            onClick={() => editor.chain().focus().setTextAlign('left').run()}
+          />
         </Tooltip>
-        <Tooltip title="標題 H3">
+        <Tooltip title="置中">
           <Button
             size="small"
-            type={editor.isActive('heading', { level: 3 }) ? 'primary' : 'default'}
-            onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-          >
-            H3
-          </Button>
+            type={editor.isActive({ textAlign: 'center' }) ? 'primary' : 'default'}
+            icon={<AlignCenterOutlined />}
+            onClick={() => editor.chain().focus().setTextAlign('center').run()}
+          />
+        </Tooltip>
+        <Tooltip title="靠右">
+          <Button
+            size="small"
+            type={editor.isActive({ textAlign: 'right' }) ? 'primary' : 'default'}
+            icon={<AlignRightOutlined />}
+            onClick={() => editor.chain().focus().setTextAlign('right').run()}
+          />
         </Tooltip>
         <Tooltip title="項目符號">
           <Button
