@@ -37,11 +37,11 @@ export default function MainLayout() {
         collapsed={collapsed}
         onCollapse={setCollapsed}
         width={220}
-        style={{ background: '#1e293b' }}
+        style={{ background: '#002B5C' }}
         theme="dark"
       >
         <div className={`sider-logo ${collapsed ? 'collapsed' : ''}`}>
-          <img src={logoImage} className="logo-image" alt="廠務管理平台 Logo" />
+          <img src={logoImage} className="logo-image" alt="Micron Facilities Logo" />
           {!collapsed && <span className="logo-text">廠務管理平台</span>}
         </div>
         <Menu
@@ -51,7 +51,7 @@ export default function MainLayout() {
           defaultOpenKeys={openKeys}
           items={menuItems}
           onClick={({ key }) => navigate(key)}
-          style={{ background: '#1e293b', borderRight: 0 }}
+          style={{ background: '#002B5C', borderRight: 0 }}
         />
       </Sider>
       <Layout>
