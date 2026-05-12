@@ -4,6 +4,7 @@ import { Alert, Button, Card, Form, Input, Select, Space, Typography } from 'ant
 import { MailOutlined, UserOutlined, IdcardOutlined, FormOutlined } from '@ant-design/icons';
 import { useAuth } from '../context/AuthContext';
 import { getEmployeeSections } from '../services/authService';
+import logoImage from '../assets/logo.jpg';
 import '../styles/auth.css';
 
 const { Title, Paragraph, Text } = Typography;
@@ -78,6 +79,12 @@ export default function Register() {
     <div className="auth-page">
       <Card className="auth-card" variant="outlined">
         <Space orientation="vertical" size={20} style={{ width: '100%' }}>
+          <div className="auth-brand-header">
+            <img src={logoImage} className="auth-brand-logo" alt="Micron Facilities" />
+            <Title level={4} className="auth-brand-name">Micron</Title>
+            <div className="auth-brand-tagline">Facilities Management Platform</div>
+            <div className="auth-brand-locale">廠務管理平台</div>
+          </div>
           <div>
             <Title level={3} className="auth-title">首次註冊</Title>
             <Paragraph className="auth-subtitle">
