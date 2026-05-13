@@ -1,0 +1,243 @@
+.passdown-page {
+  padding: 24px;
+  /* Main page background color (requested explicit marker). */
+  background: #eef2f1;
+  min-height: calc(100vh - 64px);
+}
+
+.passdown-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.passdown-layer {
+  margin-bottom: 16px;
+}
+
+
+.passdown-l1-card {
+  height: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.passdown-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.passdown-ring-card .ant-card-body {
+  position: relative;
+}
+
+.passdown-ring-wrap {
+  position: relative;
+  height: 170px;
+}
+
+.passdown-ring-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.passdown-ring-center .count {
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.passdown-ring-center .label {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.passdown-filter-panel .ant-card-head-title {
+  font-weight: 700;
+}
+
+.passdown-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.passdown-filter-actions {
+  display: flex;
+  align-items: flex-end;
+}
+
+.passdown-active-filters {
+  margin-top: 10px;
+}
+
+.passdown-drilldown-banner {
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  background: #e8f3ff;
+  border: 1px solid #b7dcff;
+}
+
+.passdown-status-tag {
+  cursor: pointer;
+}
+
+.passdown-mono {
+  font-family: 'JetBrains Mono', Consolas, monospace;
+}
+
+.passdown-inline-abnormal {
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  padding: 12px;
+}
+
+.passdown-inline-abnormal strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.passdown-row-major td {
+  background: #ffebee !important;
+}
+
+.passdown-row-general td {
+  background: #fff3e0 !important;
+}
+
+.passdown-row-pending td {
+  background: #fffde7 !important;
+}
+
+.passdown-row-closed td {
+  background: #ffffff !important;
+}
+
+.passdown-row-normal td {
+  background: #ffffff !important;
+}
+
+
+.passdown-reply-context {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.passdown-history-card {
+  border-radius: 10px;
+}
+
+.passdown-history-card.major {
+  border: 1px solid #f1a7ad;
+  background: #fff5f6;
+}
+
+.passdown-history-card.pending {
+  border: 1px solid #fbd38d;
+}
+
+.passdown-history-card.closed {
+  border: 1px solid #85d3c4;
+}
+
+.passdown-history-content p {
+  margin-bottom: 6px;
+}
+
+.passdown-hierarchy-tagbar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.passdown-hierarchy-tagbar-label {
+  font-weight: 600;
+  color: #334155;
+}
+
+.passdown-hierarchy-tagbar-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.passdown-hierarchy-group-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  margin-top: 8px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.passdown-hierarchy-columns {
+  min-height: 350px;
+}
+
+.passdown-hierarchy-list {
+  border: 1px solid #d6dde3;
+  border-radius: 6px;
+  max-height: 300px;
+  overflow: auto;
+  background: #f8fbfa;
+}
+
+.passdown-hierarchy-item {
+  display: flex;
+  justify-content: flex-start;
+  border-radius: 0;
+  min-height: 36px;
+}
+
+.passdown-hierarchy-item.ant-btn-primary {
+  background: #0f766e;
+}
+
+.passdown-hierarchy-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.passdown-attachment-popover {
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+}
+
+@media (max-width: 768px) {
+  .passdown-page {
+    padding: 12px;
+  }
+
+  .passdown-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .passdown-reply-context {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+@media (max-width: 1200px) and (min-width: 769px) {
+  .passdown-summary-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

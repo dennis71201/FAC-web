@@ -18,7 +18,7 @@ function App() {
               key={r.path}
               path={r.path}
               element={
-                <ProtectedRoute feature={r.label === 'Attendance Record' ? 'Attendance Record' : undefined}>
+                <ProtectedRoute feature={r.feature}>
                   <r.component />
                 </ProtectedRoute>
               }

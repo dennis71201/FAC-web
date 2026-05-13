@@ -48,12 +48,14 @@ const routes = [
     label: 'Attendance Record',
     icon: CalendarOutlined,
     component: AttendanceRecord,
+    feature: 'Attendance Record',
   },
   {
     path: 'passdown',
     label: 'Passdown',
     icon: SwapOutlined,
     component: Passdown,
+    feature: 'Passdown',
   },
   {
     path: 'employees',
