@@ -4,11 +4,6 @@ import { CloseOutlined, DownOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 const { RangePicker } = DatePicker;
 
-function hasAnyOptionalValue(item) {
-  if (!item) return false;
-  return Boolean(item.vendor || item.affected || item.reason || item.moveLoss);
-}
-
 function buildInitialValues({ mode, initialValue, defaultDate, defaultEmployeeSectionId, defaultSubsystem, sites }) {
   if (mode === 'edit' && initialValue) {
     return {
@@ -53,9 +48,7 @@ export default function WorkItemForm(props) {
 
   const [values, setValues] = useState(() => buildInitialValues(props));
   const [error, setError] = useState('');
-  const [showOptional, setShowOptional] = useState(() =>
-    props.mode === 'edit' && hasAnyOptionalValue(props.initialValue)
-  );
+  const [showOptional, setShowOptional] = useState(false);
 
   const handleKeyDown = useCallback((e) => {
     if (e.key === 'Escape') onClose();
