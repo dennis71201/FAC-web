@@ -130,7 +130,11 @@ function WorkItemRow({ item, displayColumns, columnLabelMap, onEdit, onDelete })
     <div className="wi-item">
       <div className="wi-item-header">
         <div className="wi-item-tags">
-          {item.subsystem && <span className="wi-item-tag subsystem">{item.subsystem}</span>}
+          {item.system && (
+            <span className="wi-item-tag subsystem">
+              {item.subsystem ? `${item.system}-${item.subsystem}` : item.system}
+            </span>
+          )}
         </div>
         <div className="wi-item-actions">
           <Tooltip title="編輯">
