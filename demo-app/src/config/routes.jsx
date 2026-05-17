@@ -3,6 +3,7 @@ import AlarmMonitor from '../pages/AlarmMonitor';
 import AttendanceRecord from '../pages/AttendanceRecord';
 import Passdown from '../pages/Passdown';
 import EmployeeManagement from '../pages/EmployeeManagement';
+import WorkItem from '../pages/WorkItem';
 
 import {
   ToolOutlined,
@@ -11,6 +12,7 @@ import {
   SwapOutlined,
   SettingOutlined,
   TeamOutlined,
+  FileTextOutlined,
 } from '@ant-design/icons';
 
 /**
@@ -54,6 +56,12 @@ const routes = [
     label: 'Passdown',
     icon: SwapOutlined,
     component: Passdown,
+  },
+  {
+    path: 'workitem',
+    label: 'Daily Work Item',
+    icon: FileTextOutlined,
+    component: WorkItem,
   },
   {
     path: 'employees',
