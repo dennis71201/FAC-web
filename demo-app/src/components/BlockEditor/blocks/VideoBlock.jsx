@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Upload, Button, message } from 'antd';
+import { Upload, Button, App } from 'antd';
 import { UploadOutlined, VideoCameraOutlined } from '@ant-design/icons';
 import { uploadFile, resolveAssetUrl } from '../utils';
 
 export default function VideoBlock({ data, readOnly, onChange }) {
   const [uploading, setUploading] = useState(false);
+  const { message } = App.useApp();
 
   const handleUpload = async (file) => {
     setUploading(true);

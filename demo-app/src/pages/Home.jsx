@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, Space, Spin, message } from 'antd';
+import { Button, Space, Spin, App } from 'antd';
 import { EditOutlined, SaveOutlined, CloseOutlined } from '@ant-design/icons';
 import BlockEditor from '../components/BlockEditor';
 import { useAuth } from '../context/AuthContext';
@@ -10,6 +10,7 @@ const EMPTY_LAYOUT = { blocks: [], layout: [] };
 export default function Home() {
   const { user } = useAuth();
   const isAdmin = user?.role === 'Administrator';
+  const { message } = App.useApp();
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);

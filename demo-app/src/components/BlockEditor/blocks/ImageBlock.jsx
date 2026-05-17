@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Upload, Button, Input, message } from 'antd';
+import { Upload, Button, Input, App } from 'antd';
 import { UploadOutlined, PictureOutlined } from '@ant-design/icons';
 import { uploadFile, resolveAssetUrl } from '../utils';
 
 export default function ImageBlock({ data, readOnly, onChange }) {
   const [uploading, setUploading] = useState(false);
+  const { message } = App.useApp();
 
   const handleUpload = async (file) => {
     setUploading(true);
