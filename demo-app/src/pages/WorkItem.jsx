@@ -105,6 +105,13 @@ export default function WorkItem() {
     setSelectedSubsystem(null);
   };
 
+  const handleSelectedDateChange = (d) => {
+    setSelectedDate(d);
+    if (d && !d.isSame(currentMonth, 'month')) {
+      setCurrentMonth(d);
+    }
+  };
+
   const handleColumnsChange = (cols) => {
     setDisplayColumns(cols);
     saveDisplayColumns(selectedEmployeeSectionId, cols);
@@ -220,7 +227,7 @@ export default function WorkItem() {
               year={year}
               month={month - 1}
               workItems={filtered}
-              onDateClick={(d) => setSelectedDate(d)}
+              onDateClick={handleSelectedDateChange}
               selectedDate={selectedDate}
             />
           )}
@@ -235,7 +242,7 @@ export default function WorkItem() {
         <div className="wi-sidebar-wrap">
           <WorkItemSidebar
             selectedDate={selectedDate}
-            onSelectedDateChange={setSelectedDate}
+            onSelectedDateChange={handleSelectedDateChange}
             workItems={filtered}
             displayColumns={displayColumns}
             allColumns={allColumns}
