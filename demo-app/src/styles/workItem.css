@@ -374,6 +374,24 @@
   transition: color 0.2s, background 0.2s;
 }
 
+.wi-icon-btn.with-label {
+  width: auto;
+  height: auto;
+  padding: 4px 10px;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid rgba(173, 179, 181, 0.25);
+}
+
+.wi-icon-btn.with-label:hover {
+  border-color: rgba(68, 86, 186, 0.4);
+}
+
+.wi-icon-btn.danger.with-label:hover {
+  border-color: rgba(168, 56, 54, 0.4);
+}
+
 .wi-icon-btn:hover {
   color: var(--color-on-surface);
   background: var(--color-surface-container-high);
