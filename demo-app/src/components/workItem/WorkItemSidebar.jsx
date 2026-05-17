@@ -135,6 +135,16 @@ function WorkItemRow({ item, displayColumns, columnLabelMap, onEdit, onDelete })
               {item.subsystem ? `${item.system}-${item.subsystem}` : item.system}
             </span>
           )}
+          <span className="wi-item-meta-inline">
+            <b>{item.createdBy?.name || '—'}</b> · {fmtDateTime(item.createdBy?.at)}
+            {item.startDate && item.endDate && item.startDate !== item.endDate && (
+              <> · {item.startDate}~{item.endDate}</>
+            )}
+            {item.lastEditedBy && item.lastEditedBy.at !== item.createdBy?.at && (
+              <> · 編輯:<b>{item.lastEditedBy.name}</b> {fmtDateTime(item.lastEditedBy.at)}</>
+            )}
+            <span className="wi-item-id"> #{item.id}</span>
+          </span>
         </div>
         <div className="wi-item-actions">
           <Tooltip title="編輯">
@@ -175,15 +185,6 @@ function WorkItemRow({ item, displayColumns, columnLabelMap, onEdit, onDelete })
         </div>
       )}
 
-      <div className="wi-item-meta">
-        {item.startDate && item.endDate && item.startDate !== item.endDate && (
-          <span>區間：<b>{item.startDate} ~ {item.endDate}</b></span>
-        )}
-        <span>建立：<b>{item.createdBy?.name || '—'}</b> · {fmtDateTime(item.createdBy?.at)} · #{item.id}</span>
-        {item.lastEditedBy && item.lastEditedBy.at !== item.createdBy?.at && (
-          <span>最後編輯：<b>{item.lastEditedBy.name}</b> · {fmtDateTime(item.lastEditedBy.at)}</span>
-        )}
-      </div>
     </div>
   );
 }

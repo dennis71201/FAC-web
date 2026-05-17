@@ -290,7 +290,7 @@
 
 .wi-item-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 8px;
   min-height: 22px;
@@ -299,7 +299,27 @@
 .wi-item-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}
+
+.wi-item-meta-inline {
+  font-size: 11px;
+  color: var(--color-on-surface-variant);
+  line-height: 1.4;
+}
+
+.wi-item-meta-inline b {
+  color: var(--color-on-surface);
+  font-weight: 600;
+}
+
+.wi-item-meta-inline .wi-item-id {
+  color: var(--color-on-surface-variant);
+  opacity: 0.7;
+  font-variant-numeric: tabular-nums;
 }
 
 .wi-item-actions {
@@ -389,21 +409,6 @@
 .wi-item-field-value.muted {
   color: var(--color-on-surface-variant);
   font-style: italic;
-}
-
-.wi-item-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding-top: 8px;
-  border-top: 1px dashed rgba(173, 179, 181, 0.25);
-  font-size: 11px;
-  color: var(--color-on-surface-variant);
-}
-
-.wi-item-meta b {
-  color: var(--color-on-surface);
-  font-weight: 600;
 }
 
 /* Column config panel */
