@@ -25,6 +25,15 @@ export default function MainLayout() {
 
   const roleLabel = user?.role === 'Administrator' ? '管理者' : '一般使用者';
 
+  const breadcrumbItems = (() => {
+    const items = [{ title: 'homepage' }];
+    const featureLabel = breadcrumbMap[currentPath];
+    if (featureLabel && currentPath !== '/home') {
+      items.push({ title: featureLabel });
+    }
+    return items;
+  })();
+
   const handleLogout = () => {
     logout();
     navigate('/');
@@ -56,12 +65,7 @@ export default function MainLayout() {
       </Sider>
       <Layout>
         <Header className="app-header">
-          <Breadcrumb
-            items={[
-              { title: 'homepage' },
-              { title: breadcrumbMap[currentPath] || '' },
-            ]}
-          />
+          <Breadcrumb items={breadcrumbItems} />
           <Space>
             <Avatar icon={<UserOutlined />} style={{ backgroundColor: '#64748B' }} />
             <Text strong>{user?.name || '未登入使用者'}</Text>
