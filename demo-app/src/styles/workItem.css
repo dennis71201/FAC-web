@@ -632,10 +632,22 @@
   cursor: not-allowed;
 }
 
-/* FAB override */
-.workitem-page .ant-float-btn {
-  inset-inline-end: 24px !important;
-  inset-block-end: 24px !important;
+/* Pill-shaped floating add button */
+.workitem-page .wi-fab {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1000;
+  height: 48px;
+  padding: 0 22px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(68, 86, 186, 0.35);
+}
+
+.workitem-page .wi-fab:hover {
+  box-shadow: 0 6px 20px rgba(68, 86, 186, 0.45);
 }
 
 /* Responsive */

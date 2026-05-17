@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Alert, DatePicker, FloatButton, Select, Spin, message } from 'antd';
+import { Alert, Button, DatePicker, Select, Spin, message } from 'antd';
 import { PlusOutlined, CalendarOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import WorkItemCalendar from '../components/workItem/WorkItemCalendar';
@@ -255,12 +255,15 @@ export default function WorkItem() {
         </div>
       </div>
 
-      <FloatButton
-        icon={<PlusOutlined />}
+      <Button
+        className="wi-fab"
         type="primary"
-        tooltip="新增工項"
+        size="large"
+        icon={<PlusOutlined />}
         onClick={handleAddClick}
-      />
+      >
+        新增工項
+      </Button>
 
       {modalVisible && (
         <WorkItemForm
