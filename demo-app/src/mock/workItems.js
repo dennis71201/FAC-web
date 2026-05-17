@@ -28,6 +28,7 @@ export const SUBSYSTEMS_BY_SECTION_ID = {
 
 // Subsystem is always shown as a tag in the work item header (not toggleable),
 // so it's intentionally excluded from admin-configurable columns.
+// creatorName toggles header creator/editor name visibility (off by default).
 export const ALL_COLUMNS = [
   { key: 'description', label: 'Description', required: true },
   { key: 'affected', label: 'Affected' },
@@ -35,6 +36,7 @@ export const ALL_COLUMNS = [
   { key: 'moveLoss', label: 'Move Loss' },
   { key: 'vendor', label: 'Vendor' },
   { key: 'site', label: 'Site' },
+  { key: 'creatorName', label: '建立者 / 編輯者姓名' },
 ];
 
 const MOCK_USERS = [

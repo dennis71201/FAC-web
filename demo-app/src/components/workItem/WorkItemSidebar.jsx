@@ -158,7 +158,10 @@ export default function WorkItemSidebar({
 }
 
 function WorkItemRow({ item, displayColumns, columnLabelMap, onEdit, onDelete }) {
-  const extraColumns = displayColumns.filter((k) => k !== 'description');
+  // 'creatorName' is a meta toggle (controls header name visibility), not an extra-grid field.
+  const extraColumns = displayColumns.filter((k) => k !== 'description' && k !== 'creatorName');
+  const showCreatorName = displayColumns.includes('creatorName');
+  const showEditor = showCreatorName && item.lastEditedBy && item.lastEditedBy.at !== item.createdBy?.at;
 
   return (
     <div className="wi-item">
@@ -170,11 +173,12 @@ function WorkItemRow({ item, displayColumns, columnLabelMap, onEdit, onDelete })
             </span>
           )}
           <span className="wi-item-meta-inline">
-            <b>{item.createdBy?.name || '—'}</b> · {fmtDateTime(item.createdBy?.at)}
+            {showCreatorName && (<><b>{item.createdBy?.name || '—'}</b> · </>)}
+            {fmtDateTime(item.createdBy?.at)}
             {item.startDate && item.endDate && item.startDate !== item.endDate && (
               <> · {item.startDate}~{item.endDate}</>
             )}
-            {item.lastEditedBy && item.lastEditedBy.at !== item.createdBy?.at && (
+            {showEditor && (
               <> · 編輯:<b>{item.lastEditedBy.name}</b> {fmtDateTime(item.lastEditedBy.at)}</>
             )}
             <span className="wi-item-id"> #{item.id}</span>
