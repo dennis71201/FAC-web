@@ -265,8 +265,16 @@
   padding: 24px 0;
 }
 
-/* Work item list — flat, no person grouping */
-.wi-item-list {
+/* Work item columns — column count決定於父層（JS distribute items so left columns fill first） */
+.wi-item-columns {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.wi-item-column {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -681,6 +689,10 @@
 
   .workitem-page .wi-sidebar-wrap {
     width: 100%;
+  }
+
+  .workitem-page .wi-item-columns {
+    flex-direction: column;
   }
 
   .wi-modal-body {

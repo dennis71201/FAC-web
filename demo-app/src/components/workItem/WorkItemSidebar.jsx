@@ -16,6 +16,19 @@ function fmtDateTime(iso) {
   return dayjs(iso).format('MM/DD HH:mm');
 }
 
+function distributeIntoColumns(items, n) {
+  const cols = Array.from({ length: n }, () => []);
+  let cursor = 0;
+  let remaining = items.length;
+  for (let c = 0; c < n; c += 1) {
+    const cap = Math.ceil(remaining / (n - c));
+    cols[c] = items.slice(cursor, cursor + cap);
+    cursor += cap;
+    remaining -= cap;
+  }
+  return cols;
+}
+
 export default function WorkItemSidebar({
   selectedDate,
   onSelectedDateChange,
@@ -25,6 +38,7 @@ export default function WorkItemSidebar({
   onColumnsChange,
   configScopeLabel,
   configEnabled,
+  columnCount,
   onEdit,
   onDelete,
 }) {
@@ -42,7 +56,18 @@ export default function WorkItemSidebar({
       if (!start || !end) return false;
       return start <= dateStr && end >= dateStr;
     });
-    return list.sort((a, b) => b.id - a.id);
+    return list.sort((a, b) => {
+      // 1. System 順序 = employeeSectionId 升序（與 EMPLOYEE_SECTIONS 順序一致）
+      if (a.employeeSectionId !== b.employeeSectionId) {
+        return (a.employeeSectionId ?? 0) - (b.employeeSectionId ?? 0);
+      }
+      // 2. 同 system 內以人分組（依 employeeId）
+      const aEmp = a.createdBy?.employeeId ?? 0;
+      const bEmp = b.createdBy?.employeeId ?? 0;
+      if (aEmp !== bEmp) return aEmp - bEmp;
+      // 3. 同人內依 id 升序
+      return a.id - b.id;
+    });
   }, [workItems, dateStr]);
 
   const columnLabelMap = useMemo(() => {
@@ -50,6 +75,11 @@ export default function WorkItemSidebar({
     allColumns.forEach((c) => { m[c.key] = c.label; });
     return m;
   }, [allColumns]);
+
+  const itemColumns = useMemo(
+    () => distributeIntoColumns(dayItems, Math.max(1, columnCount || 1)),
+    [dayItems, columnCount]
+  );
 
   const handlePrev = () => onSelectedDateChange?.(selectedDate.subtract(1, 'day'));
   const handleNext = () => onSelectedDateChange?.(selectedDate.add(1, 'day'));
@@ -105,16 +135,20 @@ export default function WorkItemSidebar({
         )}
 
         {dayItems.length > 0 && (
-          <div className="wi-item-list">
-            {dayItems.map((item) => (
-              <WorkItemRow
-                key={item.id}
-                item={item}
-                displayColumns={displayColumns}
-                columnLabelMap={columnLabelMap}
-                onEdit={onEdit}
-                onDelete={onDelete}
-              />
+          <div className="wi-item-columns">
+            {itemColumns.map((colItems, ci) => (
+              <div className="wi-item-column" key={ci}>
+                {colItems.map((item) => (
+                  <WorkItemRow
+                    key={item.id}
+                    item={item}
+                    displayColumns={displayColumns}
+                    columnLabelMap={columnLabelMap}
+                    onEdit={onEdit}
+                    onDelete={onDelete}
+                  />
+                ))}
+              </div>
             ))}
           </div>
         )}

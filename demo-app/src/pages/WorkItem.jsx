@@ -249,6 +249,7 @@ export default function WorkItem() {
             onColumnsChange={handleColumnsChange}
             configScopeLabel={configScopeLabel}
             configEnabled={!!selectedEmployeeSectionId}
+            columnCount={calendarOpen ? 2 : 3}
             onEdit={handleEdit}
             onDelete={handleDelete}
           />
