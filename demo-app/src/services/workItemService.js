@@ -140,15 +140,18 @@ function columnKey(employeeSectionId) {
 
 export function getDisplayColumns(employeeSectionId) {
   if (!employeeSectionId) return ['description'];
+  const validKeys = new Set(ALL_COLUMNS.map((c) => c.key));
   try {
     const raw = localStorage.getItem(columnKey(employeeSectionId));
     if (raw) {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        if (!parsed.includes('description')) {
-          parsed.unshift('description');
+        // Drop keys removed from ALL_COLUMNS (e.g. legacy 'subsystem')
+        const filtered = parsed.filter((k) => validKeys.has(k));
+        if (!filtered.includes('description')) {
+          filtered.unshift('description');
         }
-        return parsed;
+        return filtered;
       }
     }
   } catch {
@@ -161,10 +164,6 @@ export function saveDisplayColumns(employeeSectionId, columns) {
   if (!employeeSectionId) return;
   const ensured = columns.includes('description') ? columns : ['description', ...columns];
   localStorage.setItem(columnKey(employeeSectionId), JSON.stringify(ensured));
-}
-
-export function getEmployeeSections() {
-  return EMPLOYEE_SECTIONS;
 }
 
 export function getSectionById(id) {

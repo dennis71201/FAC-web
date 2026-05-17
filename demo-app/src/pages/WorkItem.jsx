@@ -94,8 +94,6 @@ export default function WorkItem() {
     });
   }, [workItems, selectedSite, selectedEmployeeSectionId, selectedSubsystem]);
 
-  const groupingMode = selectedEmployeeSectionId ? 'none' : 'section';
-
   const configScopeLabel = useMemo(() => {
     if (!selectedEmployeeSectionId) return '請先選定 System';
     const sec = getSectionById(selectedEmployeeSectionId);
@@ -224,7 +222,6 @@ export default function WorkItem() {
               workItems={filtered}
               onDateClick={(d) => setSelectedDate(d)}
               selectedDate={selectedDate}
-              groupingMode={groupingMode}
             />
           )}
         </div>

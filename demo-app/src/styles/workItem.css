@@ -187,19 +187,11 @@
   font-size: 12px;
 }
 
-.wi-calendar-cell .cell-today-badge {
-  display: none;
-}
-
 .wi-calendar-cell .cell-entries {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
-}
-
-.wi-calendar-cell .cell-group-row {
-  display: none;
 }
 
 .wi-calendar-cell .cell-total-badge {
@@ -654,17 +646,6 @@
 
   .workitem-page .wi-sidebar-wrap {
     width: 100%;
-  }
-
-  .workitem-page .wi-main.sidebar-collapsed .wi-sidebar-wrap {
-    width: 100%;
-    height: 0;
-  }
-
-  .workitem-page .wi-sidebar-toggle {
-    position: absolute;
-    right: 0;
-    top: -40px;
   }
 
   .wi-modal-body {

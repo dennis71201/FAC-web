@@ -26,6 +26,8 @@ export const SUBSYSTEMS_BY_SECTION_ID = {
   2: ['WWT', 'UPW', 'SDW'], // Process / WTS
 };
 
+// Subsystem is always shown as a tag in the work item header (not toggleable),
+// so it's intentionally excluded from admin-configurable columns.
 export const ALL_COLUMNS = [
   { key: 'description', label: 'Description', required: true },
   { key: 'affected', label: 'Affected' },
@@ -33,7 +35,6 @@ export const ALL_COLUMNS = [
   { key: 'moveLoss', label: 'Move Loss' },
   { key: 'vendor', label: 'Vendor' },
   { key: 'site', label: 'Site' },
-  { key: 'subsystem', label: 'Subsystem' },
 ];
 
 const MOCK_USERS = [
@@ -193,4 +194,3 @@ function buildMockWorkItems() {
 }
 
 export const mockWorkItems = buildMockWorkItems();
-export const mockUsers = MOCK_USERS;

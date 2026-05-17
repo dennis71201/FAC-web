@@ -28,30 +28,22 @@ function getCalendarDays(year, month) {
   return days;
 }
 
-export default function WorkItemCalendar({ year, month, workItems, onDateClick, selectedDate, groupingMode }) {
+export default function WorkItemCalendar({ year, month, workItems, onDateClick, selectedDate }) {
   const today = dayjs();
   const calendarDays = useMemo(() => getCalendarDays(year, month), [year, month]);
 
-  const summaryByDate = useMemo(() => {
+  const countByDate = useMemo(() => {
     const map = {};
     workItems.forEach((item) => {
-      let groupKey = '全部';
-      if (groupingMode === 'system') {
-        groupKey = item.system || '未分類';
-      } else if (groupingMode === 'section') {
-        groupKey = item.section || '未分類';
-      }
       const start = dayjs(item.startDate);
       const end = dayjs(item.endDate || item.startDate);
       for (let d = start; d.isBefore(end) || d.isSame(end, 'day'); d = d.add(1, 'day')) {
         const dateKey = d.format('YYYY-MM-DD');
-        if (!map[dateKey]) map[dateKey] = { total: 0, byGroup: {} };
-        map[dateKey].total += 1;
-        map[dateKey].byGroup[groupKey] = (map[dateKey].byGroup[groupKey] || 0) + 1;
+        map[dateKey] = (map[dateKey] || 0) + 1;
       }
     });
     return map;
-  }, [workItems, groupingMode]);
+  }, [workItems]);
 
   return (
     <div className="wi-calendar">
@@ -66,7 +58,7 @@ export default function WorkItemCalendar({ year, month, workItems, onDateClick, 
           const isToday = date.isSame(today, 'day');
           const isWeekend = date.day() === 0 || date.day() === 6;
           const isSelected = selectedDate && date.isSame(selectedDate, 'day');
-          const summary = summaryByDate[dateStr];
+          const count = countByDate[dateStr] || 0;
 
           const cellClasses = [
             'wi-calendar-cell',
@@ -88,11 +80,10 @@ export default function WorkItemCalendar({ year, month, workItems, onDateClick, 
                 ) : (
                   <span>{date.date()}</span>
                 )}
-                {isToday && <span className="cell-today-badge">TODAY</span>}
               </div>
-              {summary && summary.total > 0 && (
+              {count > 0 && (
                 <div className="cell-entries">
-                  <span className="cell-total-badge">{summary.total}</span>
+                  <span className="cell-total-badge">{count}</span>
                 </div>
               )}
             </div>
