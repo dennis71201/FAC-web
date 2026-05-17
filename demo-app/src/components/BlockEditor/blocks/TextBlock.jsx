@@ -45,7 +45,8 @@ function applyHeading(editor, value) {
 export default function TextBlock({ data, readOnly, onChange }) {
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      // 關掉 StarterKit 內建的 Link 避免與下方自訂 Link 衝突
+      StarterKit.configure({ link: false }),
       Link.configure({
         openOnClick: true,
         HTMLAttributes: { rel: 'noopener noreferrer', target: '_blank' },
