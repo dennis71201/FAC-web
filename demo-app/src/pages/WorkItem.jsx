@@ -37,7 +37,7 @@ export default function WorkItem() {
   const [selectedSubsystem, setSelectedSubsystem] = useState(null);
 
   const [selectedDate, setSelectedDate] = useState(dayjs());
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [calendarOpen, setCalendarOpen] = useState(true);
 
   const [workItems, setWorkItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -211,7 +211,7 @@ export default function WorkItem() {
         />
       )}
 
-      <div className={`wi-main ${sidebarOpen ? '' : 'sidebar-collapsed'}`}>
+      <div className={`wi-main ${calendarOpen ? '' : 'calendar-collapsed'}`}>
         <div className="wi-calendar-wrap">
           {loading ? (
             <div style={{ display: 'grid', placeItems: 'center', minHeight: 320 }}>
@@ -222,18 +222,23 @@ export default function WorkItem() {
               year={year}
               month={month - 1}
               workItems={filtered}
-              onDateClick={(d) => { setSelectedDate(d); setSidebarOpen(true); }}
+              onDateClick={(d) => setSelectedDate(d)}
               selectedDate={selectedDate}
               groupingMode={groupingMode}
             />
           )}
         </div>
-        <div className="wi-sidebar-toggle" onClick={() => setSidebarOpen((s) => !s)}>
-          {sidebarOpen ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+        <div
+          className="wi-calendar-toggle"
+          onClick={() => setCalendarOpen((s) => !s)}
+          title={calendarOpen ? '收闔行事曆' : '展開行事曆'}
+        >
+          {calendarOpen ? <MenuFoldOutlined /> : <MenuUnfoldOutlined />}
         </div>
         <div className="wi-sidebar-wrap">
           <WorkItemSidebar
             selectedDate={selectedDate}
+            onSelectedDateChange={setSelectedDate}
             workItems={filtered}
             displayColumns={displayColumns}
             allColumns={allColumns}

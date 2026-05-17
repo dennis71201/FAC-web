@@ -55,26 +55,26 @@
 }
 
 .workitem-page .wi-calendar-wrap {
-  flex: 1;
-  min-width: 0;
-  transition: flex 0.3s ease;
-}
-
-.workitem-page .wi-sidebar-wrap {
-  width: 360px;
+  width: 380px;
   flex-shrink: 0;
   overflow: hidden;
   transition: width 0.3s ease, opacity 0.3s ease;
   opacity: 1;
 }
 
-.workitem-page .wi-main.sidebar-collapsed .wi-sidebar-wrap {
+.workitem-page .wi-main.calendar-collapsed .wi-calendar-wrap {
   width: 0;
   opacity: 0;
   pointer-events: none;
 }
 
-.workitem-page .wi-sidebar-toggle {
+.workitem-page .wi-sidebar-wrap {
+  flex: 1;
+  min-width: 0;
+  transition: flex 0.3s ease;
+}
+
+.workitem-page .wi-calendar-toggle {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -91,7 +91,7 @@
   margin-top: 4px;
 }
 
-.workitem-page .wi-sidebar-toggle:hover {
+.workitem-page .wi-calendar-toggle:hover {
   background: var(--color-surface-container-high);
   color: var(--color-on-surface);
 }
@@ -130,11 +130,16 @@
 
 .wi-calendar-cell {
   background: var(--color-surface-container-lowest);
-  min-height: 110px;
-  padding: 10px;
+  min-height: 64px;
+  padding: 6px 4px;
   cursor: pointer;
   transition: background-color 0.2s ease;
   position: relative;
+}
+
+.wi-calendar-header-cell {
+  padding: 8px 0;
+  font-size: 11px;
 }
 
 .wi-calendar-cell:hover {
@@ -160,75 +165,52 @@
 }
 
 .wi-calendar-cell .cell-day {
-  font-size: 15px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--color-on-surface);
-  margin-bottom: 8px;
+  margin-bottom: 2px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 .wi-calendar-cell.today .cell-day-number {
   background: rgba(68, 86, 186, 0.1);
   color: var(--color-primary);
-  width: 26px;
-  height: 26px;
+  width: 20px;
+  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
   font-weight: 900;
-  font-size: 15px;
+  font-size: 12px;
 }
 
 .wi-calendar-cell .cell-today-badge {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--color-primary);
+  display: none;
 }
 
 .wi-calendar-cell .cell-entries {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  gap: 2px;
 }
 
 .wi-calendar-cell .cell-group-row {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  line-height: 1;
-}
-
-.wi-calendar-cell .cell-group-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--color-on-surface-variant);
-  min-width: 48px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.wi-calendar-cell .cell-count-badge {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: rgba(68, 86, 186, 0.12);
-  color: var(--color-primary);
-  white-space: nowrap;
+  display: none;
 }
 
 .wi-calendar-cell .cell-total-badge {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
-  padding: 2px 8px;
+  padding: 1px 6px;
   border-radius: 999px;
   background: rgba(34, 197, 94, 0.15);
   color: #166534;
   display: inline-block;
+  line-height: 1.4;
 }
 
 /* Sidebar */
@@ -254,20 +236,28 @@
   gap: 8px;
 }
 
-.wi-sidebar-card .card-header h3 {
-  margin: 0;
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--color-on-surface);
-}
-
 .wi-sidebar-card .card-header-actions {
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.wi-sidebar-card .card-date-badge {
+.wi-sidebar-card .card-date-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.wi-sidebar-card .card-date-text {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-on-surface);
+  min-width: 110px;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+.wi-sidebar-card .card-count-badge {
   font-size: 11px;
   font-weight: 700;
   color: var(--color-primary);
@@ -283,106 +273,47 @@
   padding: 24px 0;
 }
 
-/* Person grouping */
-.wi-person-group {
-  margin-bottom: 14px;
-}
-
-.wi-person-group:last-child {
-  margin-bottom: 0;
-}
-
-.wi-person-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 6px;
-  padding: 0 2px;
-}
-
-.wi-person-bar {
-  width: 3px;
-  height: 14px;
-  border-radius: 2px;
-  background: var(--color-primary);
-  flex-shrink: 0;
-}
-
-.wi-person-name {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--color-on-surface);
-}
-
-.wi-person-meta {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-on-surface-variant);
-}
-
-.wi-person-count {
-  margin-left: auto;
-  font-size: 11px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: rgba(68, 86, 186, 0.1);
-  color: var(--color-primary);
-}
-
-.wi-person-items {
+/* Work item list — flat, no person grouping */
+.wi-item-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 10px;
 }
 
-/* Work item card (collapsible) */
 .wi-item {
   background: var(--color-surface-container-lowest);
   border-radius: 10px;
-  border: 1px solid rgba(173, 179, 181, 0.1);
-  overflow: hidden;
-  transition: border-color 0.2s;
+  border: 1px solid rgba(173, 179, 181, 0.12);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.wi-item.expanded {
-  border-color: rgba(68, 86, 186, 0.3);
+.wi-item:hover {
+  border-color: rgba(68, 86, 186, 0.2);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
 }
 
-.wi-item-summary {
+.wi-item-header {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 10px 12px;
-  cursor: pointer;
-  user-select: none;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 22px;
 }
 
-.wi-item-summary:hover {
-  background: rgba(68, 86, 186, 0.03);
+.wi-item-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
 }
 
-.wi-item-summary-text {
-  flex: 1;
-  min-width: 0;
-  font-size: 12px;
-  color: var(--color-on-surface);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.wi-item-chevron {
-  font-size: 10px;
-  color: var(--color-on-surface-variant);
-  transition: transform 0.25s ease;
+.wi-item-actions {
+  display: flex;
+  gap: 4px;
   flex-shrink: 0;
-}
-
-.wi-item-chevron.open {
-  transform: rotate(180deg);
 }
 
 .wi-item-tag {
@@ -395,40 +326,25 @@
   white-space: nowrap;
 }
 
-.wi-item-tag.site {
-  background: rgba(34, 197, 94, 0.12);
-  color: #166534;
-}
-
 .wi-item-tag.subsystem {
   background: rgba(168, 85, 247, 0.12);
   color: #6b21a8;
 }
 
-.wi-item-body {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease;
+.wi-item-description {
+  font-size: 14px;
+  color: var(--color-on-surface);
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.55;
 }
 
-.wi-item.expanded .wi-item-body {
-  max-height: 800px;
-}
-
-.wi-item-body-inner {
-  padding: 4px 12px 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  border-top: 1px dashed rgba(173, 179, 181, 0.25);
-  margin-top: 4px;
-}
-
-.wi-item-actions-row {
-  display: flex;
-  justify-content: flex-end;
-  gap: 4px;
-  margin-top: 6px;
+.wi-item-extra-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px 16px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(173, 179, 181, 0.2);
 }
 
 .wi-icon-btn {
@@ -647,6 +563,38 @@
 .wi-modal-field-label .required {
   color: var(--color-error);
   margin-left: 2px;
+}
+
+.wi-modal-optional-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px dashed rgba(173, 179, 181, 0.4);
+  border-radius: 10px;
+  background: none;
+  color: var(--color-on-surface-variant);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.wi-modal-optional-toggle:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: rgba(68, 86, 186, 0.04);
+}
+
+.wi-modal-optional-toggle .anticon {
+  font-size: 10px;
+  transition: transform 0.25s ease;
+}
+
+.wi-modal-optional-toggle .anticon.open {
+  transform: rotate(180deg);
 }
 
 .wi-modal-actions {

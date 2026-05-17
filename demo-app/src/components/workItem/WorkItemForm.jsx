@@ -1,8 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Alert, DatePicker, Input, Select } from 'antd';
-const { RangePicker } = DatePicker;
-import { CloseOutlined } from '@ant-design/icons';
+import { CloseOutlined, DownOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
+const { RangePicker } = DatePicker;
+
+function hasAnyOptionalValue(item) {
+  if (!item) return false;
+  return Boolean(item.vendor || item.affected || item.reason || item.moveLoss);
+}
 
 function buildInitialValues({ mode, initialValue, defaultDate, defaultEmployeeSectionId, defaultSubsystem, sites }) {
   if (mode === 'edit' && initialValue) {
@@ -48,6 +53,9 @@ export default function WorkItemForm(props) {
 
   const [values, setValues] = useState(() => buildInitialValues(props));
   const [error, setError] = useState('');
+  const [showOptional, setShowOptional] = useState(() =>
+    props.mode === 'edit' && hasAnyOptionalValue(props.initialValue)
+  );
 
   const handleKeyDown = useCallback((e) => {
     if (e.key === 'Escape') onClose();
@@ -127,31 +135,13 @@ export default function WorkItemForm(props) {
               optionFilterProp="label"
             />
           </Field>
-          {subsystemOptions ? (
+          {subsystemOptions && (
             <Field label="Subsystem" required>
               <Select
                 value={values.subsystem || undefined}
                 onChange={(v) => update({ subsystem: v })}
                 options={subsystemOptions}
                 placeholder="選擇 Subsystem"
-              />
-            </Field>
-          ) : (
-            <Field label="Vendor">
-              <Input
-                value={values.vendor}
-                onChange={(e) => update({ vendor: e.target.value })}
-                placeholder="例如：帆宣"
-              />
-            </Field>
-          )}
-
-          {subsystemOptions && (
-            <Field label="Vendor" className="full-row">
-              <Input
-                value={values.vendor}
-                onChange={(e) => update({ vendor: e.target.value })}
-                placeholder="例如：帆宣"
               />
             </Field>
           )}
@@ -165,28 +155,49 @@ export default function WorkItemForm(props) {
             />
           </Field>
 
-          <Field label="Affected">
-            <Input
-              value={values.affected}
-              onChange={(e) => update({ affected: e.target.value })}
-              placeholder="例如：F11 P3"
-            />
-          </Field>
-          <Field label="Reason">
-            <Input
-              value={values.reason}
-              onChange={(e) => update({ reason: e.target.value })}
-              placeholder="原因說明"
-            />
-          </Field>
+          <div className="full-row">
+            <button
+              type="button"
+              className="wi-modal-optional-toggle"
+              onClick={() => setShowOptional((s) => !s)}
+            >
+              <DownOutlined className={showOptional ? 'open' : ''} />
+              {showOptional ? '收起其他欄位' : '展開填寫其他欄位 (Vendor / Affected / Reason / Move Loss)'}
+            </button>
+          </div>
 
-          <Field label="Move Loss" className="full-row">
-            <Input
-              value={values.moveLoss}
-              onChange={(e) => update({ moveLoss: e.target.value })}
-              placeholder="例如：~500 wafers"
-            />
-          </Field>
+          {showOptional && (
+            <>
+              <Field label="Vendor">
+                <Input
+                  value={values.vendor}
+                  onChange={(e) => update({ vendor: e.target.value })}
+                  placeholder="例如：帆宣"
+                />
+              </Field>
+              <Field label="Affected">
+                <Input
+                  value={values.affected}
+                  onChange={(e) => update({ affected: e.target.value })}
+                  placeholder="例如：F11 P3"
+                />
+              </Field>
+              <Field label="Reason">
+                <Input
+                  value={values.reason}
+                  onChange={(e) => update({ reason: e.target.value })}
+                  placeholder="原因說明"
+                />
+              </Field>
+              <Field label="Move Loss">
+                <Input
+                  value={values.moveLoss}
+                  onChange={(e) => update({ moveLoss: e.target.value })}
+                  placeholder="例如：~500 wafers"
+                />
+              </Field>
+            </>
+          )}
 
           {error && (
             <div className="full-row">

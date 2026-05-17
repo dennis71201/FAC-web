@@ -92,16 +92,7 @@ export default function WorkItemCalendar({ year, month, workItems, onDateClick, 
               </div>
               {summary && summary.total > 0 && (
                 <div className="cell-entries">
-                  {groupingMode === 'none' || Object.keys(summary.byGroup).length === 1 ? (
-                    <span className="cell-total-badge">{summary.total} 筆</span>
-                  ) : (
-                    Object.entries(summary.byGroup).map(([group, count]) => (
-                      <div key={group} className="cell-group-row">
-                        <span className="cell-group-label">{group}</span>
-                        <span className="cell-count-badge">{count}</span>
-                      </div>
-                    ))
-                  )}
+                  <span className="cell-total-badge">{summary.total}</span>
                 </div>
               )}
             </div>

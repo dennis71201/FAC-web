@@ -1,6 +1,12 @@
 import { useMemo, useState } from 'react';
-import { Popconfirm, Tooltip } from 'antd';
-import { EditOutlined, DeleteOutlined, SettingOutlined, DownOutlined } from '@ant-design/icons';
+import { Popconfirm, Tooltip, Button } from 'antd';
+import {
+  EditOutlined,
+  DeleteOutlined,
+  SettingOutlined,
+  LeftOutlined,
+  RightOutlined,
+} from '@ant-design/icons';
 import dayjs from 'dayjs';
 import ColumnConfigPanel from './ColumnConfigPanel';
 import { useAuth } from '../../context/AuthContext';
@@ -10,14 +16,9 @@ function fmtDateTime(iso) {
   return dayjs(iso).format('MM/DD HH:mm');
 }
 
-function firstLine(text) {
-  if (!text) return '';
-  const idx = text.indexOf('\n');
-  return idx >= 0 ? text.slice(0, idx) : text;
-}
-
 export default function WorkItemSidebar({
   selectedDate,
+  onSelectedDateChange,
   workItems,
   displayColumns,
   allColumns,
@@ -30,50 +31,19 @@ export default function WorkItemSidebar({
   const { user } = useAuth();
   const isAdmin = user?.role === 'Administrator';
   const [showConfig, setShowConfig] = useState(false);
-  const [expandedItemId, setExpandedItemId] = useState(null);
 
   const canShowConfigBtn = isAdmin && configEnabled;
 
   const dateStr = selectedDate?.format('YYYY-MM-DD') || '';
-  const dayItems = useMemo(
-    () => workItems.filter((w) => {
+  const dayItems = useMemo(() => {
+    const list = workItems.filter((w) => {
       const start = w.startDate || w.endDate;
       const end = w.endDate || w.startDate;
       if (!start || !end) return false;
       return start <= dateStr && end >= dateStr;
-    }),
-    [workItems, dateStr]
-  );
-
-  // Group by (creator, subsystem). Same person across different subsystems = separate groups.
-  const personGroups = useMemo(() => {
-    const map = new Map();
-    dayItems.forEach((item) => {
-      const pid = item.createdBy?.employeeId ?? 'unknown';
-      const key = `${pid}__${item.subsystem || ''}`;
-      if (!map.has(key)) {
-        map.set(key, {
-          key,
-          employeeId: pid,
-          name: item.createdBy?.name || `ID-${pid}`,
-          section: item.section,
-          system: item.system,
-          subsystem: item.subsystem || null,
-          items: [],
-        });
-      }
-      map.get(key).items.push(item);
     });
-    // Sort by name then subsystem; items by id desc (newest first)
-    const arr = Array.from(map.values());
-    arr.sort((a, b) => {
-      const nameCmp = a.name.localeCompare(b.name, 'zh-Hant');
-      if (nameCmp !== 0) return nameCmp;
-      return (a.subsystem || '').localeCompare(b.subsystem || '');
-    });
-    arr.forEach((g) => g.items.sort((a, b) => b.id - a.id));
-    return arr;
-  }, [dayItems]);
+    return list.sort((a, b) => b.id - a.id);
+  }, [workItems, dateStr]);
 
   const columnLabelMap = useMemo(() => {
     const m = {};
@@ -81,15 +51,32 @@ export default function WorkItemSidebar({
     return m;
   }, [allColumns]);
 
-  const toggle = (id) => setExpandedItemId((prev) => (prev === id ? null : id));
+  const handlePrev = () => onSelectedDateChange?.(selectedDate.subtract(1, 'day'));
+  const handleNext = () => onSelectedDateChange?.(selectedDate.add(1, 'day'));
 
   return (
     <div className="wi-sidebar">
       <div className="wi-sidebar-card">
         <div className="card-header">
-          <h3>當日工項</h3>
+          <div className="card-date-nav">
+            <Button
+              type="text"
+              size="small"
+              icon={<LeftOutlined />}
+              onClick={handlePrev}
+              aria-label="前一天"
+            />
+            <span className="card-date-text">{dateStr}</span>
+            <Button
+              type="text"
+              size="small"
+              icon={<RightOutlined />}
+              onClick={handleNext}
+              aria-label="後一天"
+            />
+          </div>
           <div className="card-header-actions">
-            <span className="card-date-badge">{dateStr}</span>
+            <span className="card-count-badge">{dayItems.length} 筆</span>
             {canShowConfigBtn && (
               <Tooltip title={showConfig ? '收起欄位設定' : '設定顯示欄位'}>
                 <button
@@ -117,96 +104,81 @@ export default function WorkItemSidebar({
           <div className="wi-list-empty">此日無工項紀錄</div>
         )}
 
-        {personGroups.map((group) => (
-          <div key={group.key} className="wi-person-group">
-            <div className="wi-person-header">
-              <span className="wi-person-bar" />
-              <span className="wi-person-name">{group.name}</span>
-              <span className="wi-person-meta">
-                {group.section} / {group.system}{group.subsystem ? ` / ${group.subsystem}` : ''}
-              </span>
-              <span className="wi-person-count">{group.items.length}</span>
-            </div>
-            <div className="wi-person-items">
-              {group.items.map((item) => {
-                const expanded = expandedItemId === item.id;
-                return (
-                  <WorkItemRow
-                    key={item.id}
-                    item={item}
-                    expanded={expanded}
-                    onToggle={() => toggle(item.id)}
-                    displayColumns={displayColumns}
-                    columnLabelMap={columnLabelMap}
-                    onEdit={onEdit}
-                    onDelete={onDelete}
-                  />
-                );
-              })}
-            </div>
+        {dayItems.length > 0 && (
+          <div className="wi-item-list">
+            {dayItems.map((item) => (
+              <WorkItemRow
+                key={item.id}
+                item={item}
+                displayColumns={displayColumns}
+                columnLabelMap={columnLabelMap}
+                onEdit={onEdit}
+                onDelete={onDelete}
+              />
+            ))}
           </div>
-        ))}
+        )}
       </div>
     </div>
   );
 }
 
-function WorkItemRow({ item, expanded, onToggle, displayColumns, columnLabelMap, onEdit, onDelete }) {
-  const renderField = (key) => {
-    const value = item[key];
-    const isEmpty = value === null || value === undefined || String(value).trim() === '';
-    return (
-      <div className="wi-item-field" key={key}>
-        <span className="wi-item-field-label">{columnLabelMap[key] || key}</span>
-        <span className={`wi-item-field-value${isEmpty ? ' muted' : ''}`}>
-          {isEmpty ? '—' : String(value)}
-        </span>
-      </div>
-    );
-  };
-
-  const collapsedDesc = firstLine(item.description) || '（無描述）';
+function WorkItemRow({ item, displayColumns, columnLabelMap, onEdit, onDelete }) {
+  const extraColumns = displayColumns.filter((k) => k !== 'description');
 
   return (
-    <div className={`wi-item ${expanded ? 'expanded' : 'collapsed'}`}>
-      <div className="wi-item-summary" onClick={onToggle} role="button" tabIndex={0}>
-        <span className="wi-item-summary-text">{collapsedDesc}</span>
-        <DownOutlined className={`wi-item-chevron ${expanded ? 'open' : ''}`} />
+    <div className="wi-item">
+      <div className="wi-item-header">
+        <div className="wi-item-tags">
+          {item.subsystem && <span className="wi-item-tag subsystem">{item.subsystem}</span>}
+        </div>
+        <div className="wi-item-actions">
+          <Tooltip title="編輯">
+            <button className="wi-icon-btn" onClick={() => onEdit(item)} aria-label="編輯">
+              <EditOutlined />
+            </button>
+          </Tooltip>
+          <Popconfirm
+            title="確認刪除此工項？"
+            onConfirm={() => onDelete(item.id)}
+            okText="刪除"
+            cancelText="取消"
+            placement="left"
+          >
+            <button className="wi-icon-btn danger" aria-label="刪除">
+              <DeleteOutlined />
+            </button>
+          </Popconfirm>
+        </div>
       </div>
 
-      <div className="wi-item-body">
-        <div className="wi-item-body-inner">
-          <div className="wi-item-actions-row">
-            <Tooltip title="編輯">
-              <button className="wi-icon-btn" onClick={(e) => { e.stopPropagation(); onEdit(item); }} aria-label="編輯">
-                <EditOutlined />
-              </button>
-            </Tooltip>
-            <Popconfirm
-              title="確認刪除此工項？"
-              onConfirm={() => onDelete(item.id)}
-              okText="刪除"
-              cancelText="取消"
-              placement="left"
-            >
-              <button className="wi-icon-btn danger" onClick={(e) => e.stopPropagation()} aria-label="刪除">
-                <DeleteOutlined />
-              </button>
-            </Popconfirm>
-          </div>
+      <div className="wi-item-description">{item.description || '（無描述）'}</div>
 
-          {displayColumns.map((key) => renderField(key))}
-
-          <div className="wi-item-meta">
-            {item.startDate && item.endDate && item.startDate !== item.endDate && (
-              <span>區間：<b>{item.startDate} ~ {item.endDate}</b></span>
-            )}
-            <span>建立：<b>{item.createdBy?.name || '—'}</b> · {fmtDateTime(item.createdBy?.at)} · #{item.id}</span>
-            {item.lastEditedBy && item.lastEditedBy.at !== item.createdBy?.at && (
-              <span>最後編輯：<b>{item.lastEditedBy.name}</b> · {fmtDateTime(item.lastEditedBy.at)}</span>
-            )}
-          </div>
+      {extraColumns.length > 0 && (
+        <div className="wi-item-extra-grid">
+          {extraColumns.map((key) => {
+            const value = item[key];
+            const isEmpty = value === null || value === undefined || String(value).trim() === '';
+            return (
+              <div className="wi-item-field" key={key}>
+                <span className="wi-item-field-label">{columnLabelMap[key] || key}</span>
+                <span className={`wi-item-field-value${isEmpty ? ' muted' : ''}`}>
+                  {isEmpty ? '—' : String(value)}
+                </span>
+              </div>
+            );
+          })}
         </div>
+      )}
+
+      <div className="wi-item-meta">
+        {item.startDate && item.endDate && item.startDate !== item.endDate && (
+          <span>區間：<b>{item.startDate} ~ {item.endDate}</b></span>
+        )}
+        <span>建立：<b>{item.createdBy?.name || '—'}</b> · {fmtDateTime(item.createdBy?.at)} · #{item.id}</span>
+        {item.lastEditedBy && item.lastEditedBy.at !== item.createdBy?.at && (
+          <span>最後編輯：<b>{item.lastEditedBy.name}</b> · {fmtDateTime(item.lastEditedBy.at)}</span>
+        )}
       </div>
     </div>
   );
