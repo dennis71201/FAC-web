@@ -31,10 +31,18 @@ export default function WorkItem() {
   const [selectedSite, setSelectedSite] = useState(() => (sites.includes('MTB') ? 'MTB' : sites[0] || null));
   // Default to logged-in user's own section/system. Falls back to null when
   // the JWT was issued before employeeSectionId was added — user re-logs in to populate.
+  const [selectedSection, setSelectedSection] = useState(
+    () => getSectionById(user?.employeeSectionId)?.sectionName ?? null
+  );
   const [selectedEmployeeSectionId, setSelectedEmployeeSectionId] = useState(
     user?.employeeSectionId ?? null
   );
   const [selectedSubsystem, setSelectedSubsystem] = useState(null);
+
+  const sectionNames = useMemo(
+    () => groupedSystemOptions.map((g) => g.label),
+    [groupedSystemOptions]
+  );
 
   const [selectedDate, setSelectedDate] = useState(dayjs());
   const [calendarOpen, setCalendarOpen] = useState(true);
@@ -88,11 +96,12 @@ export default function WorkItem() {
   const filtered = useMemo(() => {
     return workItems.filter((w) => {
       if (selectedSite && w.site !== selectedSite) return false;
+      if (selectedSection && w.section !== selectedSection) return false;
       if (selectedEmployeeSectionId && w.employeeSectionId !== selectedEmployeeSectionId) return false;
       if (selectedSubsystem && w.subsystem !== selectedSubsystem) return false;
       return true;
     });
-  }, [workItems, selectedSite, selectedEmployeeSectionId, selectedSubsystem]);
+  }, [workItems, selectedSite, selectedSection, selectedEmployeeSectionId, selectedSubsystem]);
 
   const configScopeLabel = useMemo(() => {
     if (!selectedEmployeeSectionId) return '請先選定 System';
@@ -100,9 +109,34 @@ export default function WorkItem() {
     return sec ? `${sec.sectionName} / ${sec.systemName}` : '';
   }, [selectedEmployeeSectionId]);
 
+  const handleSectionChange = (v) => {
+    const newSection = v || null;
+    setSelectedSection(newSection);
+    // 清掉 Section → System/Subsystem 也一起清
+    if (!newSection) {
+      setSelectedEmployeeSectionId(null);
+      setSelectedSubsystem(null);
+      return;
+    }
+    // 切到新 Section → 若目前 System 不在範圍內，清掉 System (新動的優先)
+    if (selectedEmployeeSectionId) {
+      const group = groupedSystemOptions.find((g) => g.label === newSection);
+      const valid = group?.options.some((opt) => opt.value === selectedEmployeeSectionId);
+      if (!valid) {
+        setSelectedEmployeeSectionId(null);
+        setSelectedSubsystem(null);
+      }
+    }
+  };
+
   const handleSystemChange = (v) => {
     setSelectedEmployeeSectionId(v || null);
     setSelectedSubsystem(null);
+    // 選了 System 就自動補上對應的 Section（保持兩個下拉一致）
+    if (v) {
+      const sec = getSectionById(v);
+      if (sec) setSelectedSection(sec.sectionName);
+    }
   };
 
   const handleSelectedDateChange = (d) => {
@@ -188,6 +222,14 @@ export default function WorkItem() {
             onChange={(v) => setSelectedSite(v || null)}
             options={sites.map((s) => ({ label: s, value: s }))}
             style={{ width: 110 }}
+          />
+          <Select
+            placeholder="Section"
+            allowClear
+            value={selectedSection || undefined}
+            onChange={handleSectionChange}
+            options={sectionNames.map((s) => ({ label: s, value: s }))}
+            style={{ width: 130 }}
           />
           <Select
             placeholder="System"
