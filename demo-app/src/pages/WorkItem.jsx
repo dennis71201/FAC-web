@@ -10,7 +10,7 @@ import {
   getWorkItems,
   createWorkItem,
   updateWorkItem,
-  deleteWorkItem,
+  deleteWorkItemDay,
   getSites,
   getAllColumns,
   getDisplayColumns,
@@ -129,11 +129,17 @@ export default function WorkItem() {
     setModalVisible(true);
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id, dateStr) => {
     try {
-      await deleteWorkItem(id);
+      const result = await deleteWorkItemDay(id, dateStr, user);
       await loadData();
-      message.success('工項已刪除');
+      if (result.action === 'split') {
+        message.success(`已從工項移除此日，原工項已拆分為兩筆 (#${result.id} / #${result.newId})`);
+      } else if (result.action === 'truncated') {
+        message.success('已從工項移除此日');
+      } else {
+        message.success('工項已刪除');
+      }
     } catch (e) {
       message.error(e.message || '刪除失敗');
     }

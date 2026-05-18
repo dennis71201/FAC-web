@@ -138,6 +138,7 @@ export default function WorkItemSidebar({
                     item={item}
                     displayColumns={displayColumns}
                     columnLabelMap={columnLabelMap}
+                    currentDateStr={dateStr}
                     onEdit={onEdit}
                     onDelete={onDelete}
                   />
@@ -151,11 +152,18 @@ export default function WorkItemSidebar({
   );
 }
 
-function WorkItemRow({ item, displayColumns, columnLabelMap, onEdit, onDelete }) {
+function WorkItemRow({ item, displayColumns, columnLabelMap, currentDateStr, onEdit, onDelete }) {
   // 'creatorName' is a meta toggle (controls header name visibility), not an extra-grid field.
   const extraColumns = displayColumns.filter((k) => k !== 'description' && k !== 'creatorName');
   const showCreatorName = displayColumns.includes('creatorName');
   const showEditor = showCreatorName && item.lastEditedBy && item.lastEditedBy.at !== item.createdBy?.at;
+  const isMultiDay = item.startDate && item.endDate && item.startDate !== item.endDate;
+  const isMiddleDay = isMultiDay && currentDateStr > item.startDate && currentDateStr < item.endDate;
+  const deletePopTitle = !isMultiDay
+    ? '確認刪除此工項？'
+    : isMiddleDay
+      ? `從工項移除 ${currentDateStr}？此多日工項會自動拆分為兩筆`
+      : `從工項移除 ${currentDateStr}？此多日工項會自動縮短一天`;
 
   return (
     <div className="wi-item">
@@ -182,8 +190,8 @@ function WorkItemRow({ item, displayColumns, columnLabelMap, onEdit, onDelete })
             <span>Edit</span>
           </button>
           <Popconfirm
-            title="確認刪除此工項？"
-            onConfirm={() => onDelete(item.id)}
+            title={deletePopTitle}
+            onConfirm={() => onDelete(item.id, currentDateStr)}
             okText="刪除"
             cancelText="取消"
             placement="left"

@@ -134,6 +134,75 @@ export async function deleteWorkItem(id) {
   return { id };
 }
 
+/**
+ * Day-aware delete for multi-day work items.
+ * - Single-day item: full delete
+ * - Multi-day, day is start or end: truncate (no new item)
+ * - Multi-day, day in the middle: split into two — original keeps id and gets [start, day-1],
+ *   a new item with a new id gets [day+1, end].
+ * Returns { action: 'deleted' | 'truncated' | 'split', id, newId? }.
+ */
+export async function deleteWorkItemDay(id, dayToRemove, currentUser) {
+  await delay();
+  const list = loadStore();
+  const idx = list.findIndex((w) => w.id === id);
+  if (idx < 0) throw new Error('Work item not found');
+
+  const item = list[idx];
+  const start = item.startDate;
+  const end = item.endDate || start;
+
+  if (dayToRemove < start || dayToRemove > end) {
+    throw new Error('Day is not within the work item date range');
+  }
+
+  const editor = {
+    employeeId: currentUser?.employeeId ?? 0,
+    name: currentUser?.name ?? '未知使用者',
+    at: new Date().toISOString(),
+  };
+
+  // Single-day item -> full delete
+  if (start === end) {
+    list.splice(idx, 1);
+    saveStore(list);
+    return { action: 'deleted', id };
+  }
+
+  // First day of multi-day -> shift start forward
+  if (dayToRemove === start) {
+    const newStart = dayjs(start).add(1, 'day').format('YYYY-MM-DD');
+    list[idx] = { ...item, startDate: newStart, lastEditedBy: editor };
+    saveStore(list);
+    return { action: 'truncated', id };
+  }
+
+  // Last day of multi-day -> shift end backward
+  if (dayToRemove === end) {
+    const newEnd = dayjs(end).subtract(1, 'day').format('YYYY-MM-DD');
+    list[idx] = { ...item, endDate: newEnd, lastEditedBy: editor };
+    saveStore(list);
+    return { action: 'truncated', id };
+  }
+
+  // Middle day -> split
+  const dayBefore = dayjs(dayToRemove).subtract(1, 'day').format('YYYY-MM-DD');
+  const dayAfter = dayjs(dayToRemove).add(1, 'day').format('YYYY-MM-DD');
+
+  list[idx] = { ...item, endDate: dayBefore, lastEditedBy: editor };
+
+  const nextId = (list.reduce((m, w) => Math.max(m, w.id), 0) || 0) + 1;
+  list.push({
+    ...item,
+    id: nextId,
+    startDate: dayAfter,
+    endDate: end,
+    lastEditedBy: editor,
+  });
+  saveStore(list);
+  return { action: 'split', id, newId: nextId };
+}
+
 function columnKey(employeeSectionId) {
   return `${COLUMNS_KEY_PREFIX}${employeeSectionId ?? 'all'}`;
 }
