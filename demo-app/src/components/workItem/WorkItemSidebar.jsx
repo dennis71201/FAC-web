@@ -7,14 +7,8 @@ import {
   LeftOutlined,
   RightOutlined,
 } from '@ant-design/icons';
-import dayjs from 'dayjs';
 import ColumnConfigPanel from './ColumnConfigPanel';
 import { useAuth } from '../../context/AuthContext';
-
-function fmtDateTime(iso) {
-  if (!iso) return '';
-  return dayjs(iso).format('MM/DD HH:mm');
-}
 
 function distributeIntoColumns(items, n) {
   const cols = Array.from({ length: n }, () => []);
@@ -173,15 +167,13 @@ function WorkItemRow({ item, displayColumns, columnLabelMap, onEdit, onDelete })
             </span>
           )}
           <span className="wi-item-meta-inline">
-            {showCreatorName && (<><b>{item.createdBy?.name || '—'}</b> · </>)}
-            {fmtDateTime(item.createdBy?.at)}
+            {showCreatorName && <b>{item.createdBy?.name || '—'}</b>}
             {item.startDate && item.endDate && item.startDate !== item.endDate && (
-              <> · {item.startDate}~{item.endDate}</>
+              <>{showCreatorName ? ' · ' : ''}{item.startDate}~{item.endDate}</>
             )}
             {showEditor && (
-              <> · 編輯:<b>{item.lastEditedBy.name}</b> {fmtDateTime(item.lastEditedBy.at)}</>
+              <> · 編輯:<b>{item.lastEditedBy.name}</b></>
             )}
-            <span className="wi-item-id"> #{item.id}</span>
           </span>
         </div>
         <div className="wi-item-actions">
