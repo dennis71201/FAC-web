@@ -81,7 +81,7 @@ export default function WorkItemCalendar({ year, month, workItems, onDateClick, 
                   <span>{date.date()}</span>
                 )}
               </div>
-              {count > 0 && (
+              {count > 0 && !isWeekend && (
                 <div className="cell-entries">
                   <span className="cell-total-badge">{count}</span>
                 </div>
