@@ -540,6 +540,15 @@
   letter-spacing: -0.02em;
 }
 
+.wi-modal-header h2 .wi-modal-id {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-on-surface-variant);
+  letter-spacing: 0;
+  margin-left: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
 .wi-modal-close {
   display: flex;
   align-items: center;

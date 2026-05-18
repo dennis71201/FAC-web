@@ -38,6 +38,7 @@ function buildInitialValues({ mode, initialValue, defaultDate, defaultEmployeeSe
 export default function WorkItemForm(props) {
   const {
     mode,
+    initialValue,
     groupedSystemOptions,
     getSubsystemsBySectionId,
     sites,
@@ -94,7 +95,11 @@ export default function WorkItemForm(props) {
     <div className="wi-modal-overlay" onClick={handleOverlayClick}>
       <div className="wi-modal-card" role="dialog" aria-modal="true">
         <div className="wi-modal-header">
-          <h2>{mode === 'edit' ? '編輯工項' : '新增工項'}</h2>
+          <h2>
+            {mode === 'edit'
+              ? <>編輯工項 <span className="wi-modal-id">#{initialValue?.id}</span></>
+              : '新增工項'}
+          </h2>
           <button className="wi-modal-close" onClick={onClose} aria-label="關閉">
             <CloseOutlined />
           </button>
