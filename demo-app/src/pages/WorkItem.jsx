@@ -28,7 +28,7 @@ export default function WorkItem() {
   const groupedSystemOptions = useMemo(() => getGroupedSystemOptions(), []);
 
   const [currentMonth, setCurrentMonth] = useState(dayjs());
-  const [selectedSite, setSelectedSite] = useState(null);
+  const [selectedSite, setSelectedSite] = useState(() => (sites.includes('MTB') ? 'MTB' : sites[0] || null));
   // Default to logged-in user's own section/system. Falls back to null when
   // the JWT was issued before employeeSectionId was added — user re-logs in to populate.
   const [selectedEmployeeSectionId, setSelectedEmployeeSectionId] = useState(
@@ -249,7 +249,7 @@ export default function WorkItem() {
             onColumnsChange={handleColumnsChange}
             configScopeLabel={configScopeLabel}
             configEnabled={!!selectedEmployeeSectionId}
-            columnCount={calendarOpen ? 2 : 3}
+            columnCount={calendarOpen ? 1 : 2}
             onEdit={handleEdit}
             onDelete={handleDelete}
           />

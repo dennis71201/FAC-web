@@ -177,9 +177,9 @@ function WorkItemRow({ item, displayColumns, columnLabelMap, onEdit, onDelete })
           </span>
         </div>
         <div className="wi-item-actions">
-          <button className="wi-icon-btn with-label" onClick={() => onEdit(item)} aria-label="編輯">
+          <button className="wi-icon-btn with-label" onClick={() => onEdit(item)} aria-label="Edit">
             <EditOutlined />
-            <span>編輯</span>
+            <span>Edit</span>
           </button>
           <Popconfirm
             title="確認刪除此工項？"
@@ -188,9 +188,9 @@ function WorkItemRow({ item, displayColumns, columnLabelMap, onEdit, onDelete })
             cancelText="取消"
             placement="left"
           >
-            <button className="wi-icon-btn danger with-label" aria-label="刪除">
+            <button className="wi-icon-btn danger with-label" aria-label="Delete">
               <DeleteOutlined />
-              <span>刪除</span>
+              <span>Delete</span>
             </button>
           </Popconfirm>
         </div>

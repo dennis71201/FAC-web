@@ -331,10 +331,10 @@
 }
 
 .wi-item-tag {
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 4px;
+  padding: 3px 12px;
+  border-radius: 6px;
   background: rgba(68, 86, 186, 0.08);
   color: var(--color-primary);
   white-space: nowrap;
@@ -346,11 +346,11 @@
 }
 
 .wi-item-description {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--color-on-surface);
   white-space: pre-wrap;
   word-break: break-word;
-  line-height: 1.55;
+  line-height: 1.6;
 }
 
 .wi-item-extra-grid {
@@ -383,15 +383,23 @@
   gap: 4px;
   font-size: 12px;
   font-weight: 600;
-  border: 1px solid rgba(173, 179, 181, 0.25);
+  color: var(--color-primary);
+  border: 1px solid rgba(68, 86, 186, 0.3);
 }
 
 .wi-icon-btn.with-label:hover {
-  border-color: rgba(68, 86, 186, 0.4);
+  background: rgba(68, 86, 186, 0.06);
+  border-color: rgba(68, 86, 186, 0.5);
+}
+
+.wi-icon-btn.danger.with-label {
+  color: var(--color-error);
+  border-color: rgba(168, 56, 54, 0.3);
 }
 
 .wi-icon-btn.danger.with-label:hover {
-  border-color: rgba(168, 56, 54, 0.4);
+  background: rgba(168, 56, 54, 0.06);
+  border-color: rgba(168, 56, 54, 0.5);
 }
 
 .wi-icon-btn:hover {
@@ -561,6 +569,12 @@
 
 .wi-modal-body .full-row {
   grid-column: 1 / -1;
+}
+
+.wi-modal-body .wi-form-top-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr;
+  gap: 16px 20px;
 }
 
 .wi-modal-field {

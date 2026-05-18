@@ -101,33 +101,34 @@ export default function WorkItemForm(props) {
         </div>
 
         <div className="wi-modal-body">
-          <Field label="Site" required>
-            <Select
-              value={values.site || undefined}
-              onChange={(v) => update({ site: v })}
-              options={sites.map((s) => ({ label: s, value: s }))}
-              placeholder="選擇 Site"
-            />
-          </Field>
-          <Field label="When" required>
-            <RangePicker
-              value={values.dateRange}
-              onChange={(range) => update({ dateRange: range || [null, null] })}
-              allowClear={false}
-              style={{ width: '100%' }}
-            />
-          </Field>
-
-          <Field label="System" required>
-            <Select
-              value={values.employeeSectionId || undefined}
-              onChange={(v) => update({ employeeSectionId: v, subsystem: null })}
-              options={groupedSystemOptions}
-              placeholder="選擇 System"
-              showSearch
-              optionFilterProp="label"
-            />
-          </Field>
+          <div className="full-row wi-form-top-row">
+            <Field label="Site" required>
+              <Select
+                value={values.site || undefined}
+                onChange={(v) => update({ site: v })}
+                options={sites.map((s) => ({ label: s, value: s }))}
+                placeholder="選擇 Site"
+              />
+            </Field>
+            <Field label="System" required>
+              <Select
+                value={values.employeeSectionId || undefined}
+                onChange={(v) => update({ employeeSectionId: v, subsystem: null })}
+                options={groupedSystemOptions}
+                placeholder="選擇 System"
+                showSearch
+                optionFilterProp="label"
+              />
+            </Field>
+            <Field label="When" required>
+              <RangePicker
+                value={values.dateRange}
+                onChange={(range) => update({ dateRange: range || [null, null] })}
+                allowClear={false}
+                style={{ width: '100%' }}
+              />
+            </Field>
+          </div>
           {subsystemOptions && (
             <Field label="Subsystem" required>
               <Select
@@ -144,7 +145,7 @@ export default function WorkItemForm(props) {
               value={values.description}
               onChange={(e) => update({ description: e.target.value })}
               placeholder="工項詳細內容，可換行輸入"
-              autoSize={{ minRows: 3, maxRows: 8 }}
+              autoSize={{ minRows: 10, maxRows: 24 }}
             />
           </Field>
 
